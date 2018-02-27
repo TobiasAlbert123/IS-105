@@ -1,228 +1,132 @@
-<p><span style="font-size: 18pt;"><strong>Intro:</strong></span></p>
-<p>Obligatorisk oppgave er en gruppeoppgave som er en del av mappeinnleveringen og teller mot sluttkarakter.</p>
-<p>Oppgavene skal l&oslash;ses og lastes opp p&aring; Github.&nbsp;<br />Oppgavene skal besvares i en .md (markdown) fil, og go filene skal lastes opp i mappestrukturen.</p>
-<p>&nbsp;Filer referert i oppgaven ligger her:&nbsp;<a class="instructure_file_link" title="Oblig1.zip" href="https://uia.instructure.com/courses/694/files/75251/download?wrap=1" data-api-endpoint="https://uia.instructure.com/api/v1/courses/694/files/75251" data-api-returntype="File">Oblig1.zip</a></p>
-<p>&nbsp;</p>
-<h1><strong>1. Fyll ut manglende tall i tabell</strong></h1>
-<table style="width: 687px;" border="1">
-<tbody>
-<tr>
-<td style="width: 265px;">
-<p>Bin&aelig;re tall (mest signifikant bit til venstre</p>
-</td>
-<td style="width: 204px;">
-<p>Hexadesimaltall</p>
-</td>
-<td style="width: 195px;">
-<p>Desimaltall</p>
-</td>
-</tr>
-<tr>
-<td style="width: 265px; text-align: center;">
-<p>1101</p>
-</td>
-<td style="width: 204px; text-align: center;">
-<p>0xD</p>
-</td>
-<td style="width: 195px; text-align: center;">
-<p>13</p>
-</td>
-</tr>
-<tr>
-<td style="width: 265px; text-align: center;">
-<p>110111101010</p>
-</td>
-<td style="width: 204px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-<td style="width: 195px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-</tr>
-<tr>
-<td style="width: 265px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-<td style="width: 204px; text-align: center;">
-<p>0xAF34</p>
-</td>
-<td style="width: 195px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-</tr>
-<tr>
-<td style="width: 265px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-<td style="width: 204px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-<td style="width: 195px; text-align: center;">
-<p>65535</p>
-</td>
-</tr>
-<tr>
-<td style="width: 265px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-<td style="width: 204px; text-align: center;">
-<p>&nbsp;</p>
-</td>
-<td style="width: 195px; text-align: center;">
-<p>71562</p>
-</td>
-</tr>
-</tbody>
-</table>
-<h2><span style="font-size: 18pt;"></span></h2>
-<h2><span style="font-size: 18pt;"><strong>Oppgave A</strong></span></h2>
-<p>Beskriv kort metode for &aring; g&aring; fra bin&aelig;re tall til hexadesimale tall og motsatt. Beskriv kort metoden for &aring; g&aring; fra bin&aelig;re tall til desimaltall og motsatt.</p>
-<h2><span style="font-size: 18pt;"><strong>Oppgave B</strong></span></h2>
-<p>Beskriv kort metoden for &aring; g&aring; fra hexadesimale tall til desimaltall og motsatt.</p>
-<p>&nbsp;</p>
-<h1><strong>2. Forst&aring; algoritmer og utf&oslash;re &ldquo;benchmark&rdquo;-tester p&aring; koden</strong></h1>
-<p>Programmeringsoppgave: - ta utgangspunkt i pakken algorithms i oblig1</p>
-<h2><span style="font-size: 18pt;"><strong>Oppgave A</strong></span></h2>
-<p>Skriv en modifisert bubble-sort funksjon Bubble_sort_modified basert p&aring; eksempel-funksjon BubbleSort i filen sorting.go (se <a href="https://en.wikipedia.org/wiki/Bubble_sort">https://en.wikipedia.org/wiki/Bubble_sort</a> for tips)</p>
-<h2><span style="font-size: 18pt;"><strong>Oppgave&nbsp;B</strong></span></h2>
-<p>Skriv "benchmark"-tester for <span>Bubble_sort_modified&nbsp;</span>funksjonen basert p&aring; eksempel-funksjon benchmarkBSort i filen sorting_test.go</p>
-<h2><span style="font-size: 18pt;"><strong>Oppgave C</strong></span></h2>
-<p>Det finnes ogs&aring; en implementasjon av Quicksort algoritme i sorting.go og tilsvarende implementasjon av tester i go; utf&oslash;r alle benchmark- testene med kommando &ldquo;go test -bench=.&rdquo; og presenter resultatene grafisk</p>
-<p>Hva kan du si om big-O for alle 3 algoritmene, som du har testet?</p>
-<p>&nbsp;</p>
-<p><em>Ressurser:</em></p>
-<p><em>Golang test:&nbsp;<a href="https://golang.org/pkg/testing/">https://golang.org/pkg/testing/</a>&nbsp;</em></p>
-<p><em>Bubble sort: <a href="https://en.wikipedia.org/wiki/Bubble_sort">https://en.wikipedia.org/wiki/Bubble_sort</a></em></p>
-<p><em>Big-O <a href="http://bigocheatsheet.com">http://bigocheatsheet.com</a> &nbsp;</em></p>
-<p>&nbsp;</p>
-<h1><strong>3. Forst&aring; prosessadministrajon p&aring; et platform</strong></h1>
-<p>Skriv et program som best&aring;r av en evig l&oslash;kke. Hvor mye minne og CPU bruker programmet n&aring;r det kj&oslash;rer. Programmet skal skrive ut en avslutningsmeld- ing n&aring;r programmet mottar et SIGINT signal. Generer ulike avslutningssig- naler til prosessen og dokumenter hvilke avslutningskommandoer programmet h&aring;ndterer og som trigger avslutningsmeldingen.</p>
-<p>Ressurs: <br /> <span><a href="https://en.wikipedia.org/wiki/Signal_(IPC)">https://en.wikipedia.org/wiki/Signal_(IPC)</a></span></p>
-<p><a href="https://golang.org/pkg/os/signal/#hdr-Windows">https://golang.org/pkg/os/signal/#hdr-Windows</a>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<h1><strong>4. Typografiske symboler</strong></h1>
-<p>Form&aring;l:</p>
-<ul>
-<li>Bli kjent med ISO/IEC 8859 serier for 8-bits koding av typografiske sym- boler.</li>
-<li>Illustrere forskjell p&aring; ASCII og utvidet ASCII kode gjennom golang rammeverk for behandling av tekststrenger (p&aring; engelsk brukes det nesten alltid begrepet &ldquo;strings&rdquo; for tekststrenger).</li>
-</ul>
-<p>Hva trenger du &aring; vite for &aring; klare denne oppgaven:</p>
-<ul>
-<li>du m&aring; forst&aring; &ldquo;slices&rdquo; i golang</li>
-<li>at de f&oslash;rste 256 &ldquo;code points&rdquo; (kodepunkter, som tilsvarer typen &ldquo;rune&rdquo; i golang, varierer fra platform til platform og fra program til program; det finnes 15 forskjellige deler av ISO/IEC 8859 serier for 8-bits koder)</li>
-</ul>
-<p>&nbsp;</p>
-<h2><span style="font-size: 18pt;"><strong>Oppgave A</strong></span></h2>
-<p>Bruk filen ascii.go i Oblig1 mappen og lag en funksjon som itererer (g&aring;r i en l&oslash;kke over)&nbsp; over tegn med byte-verdier fra 0x80 til 0xFF, dvs. det utvidede ASCII settet.</p>
-<h3>Kravspesifikasjon</h3>
-<p>Funksjonsnavn skal v&aelig;re iterateOverExtendedASCIIStringLiteral(...) og den skal ta et argument,&nbsp; som skal v&aelig;re av&nbsp; type string (&ldquo;string literal&rdquo;).&nbsp;&nbsp; Dere&nbsp;&nbsp; m&aring; generere / deklarere en string med alle de 128 heksadesimale verdiene ( &ldquo;\x80\x81. . . \xFF&rdquo; ) som funksjonen kan ta som argument. Funksjonen trenger ikke &aring; returnere noe eksplisitt.</p>
-<p>Utskriftsformatet skal v&aelig;re f&oslash;lgende:</p>
-<p>[utvidet-ascii-kode heksadesimalt med store bokstaver A-F][mellomrom][symbol for utvidet-ascii-kode] [mellomrom][utvidet-ascii-kode bin&aelig;rt][linjeskift]</p>
-<p>Eksempel :</p>
-<table style="width: 299px;">
-<tbody>
-<tr>
-<td style="width: 115px; text-align: center;">
-<p>3E</p>
-</td>
-<td style="width: 115px; text-align: center;">
-<p>&nbsp;&gt;</p>
-</td>
-<td style="width: 170px; text-align: center;">
-<p>111110</p>
-</td>
-</tr>
-<tr>
-<td style="width: 115px; text-align: center;">
-<p>BA</p>
-</td>
-<td style="width: 115px; text-align: center;">
-<p>&nbsp;&ordm;</p>
-</td>
-<td style="width: 170px; text-align: center;">
-<p>10111010</p>
-</td>
-</tr>
-<tr>
-<td style="width: 115px; text-align: center;">
-<p>BB</p>
-</td>
-<td style="width: 115px; text-align: center;">
-<p>&nbsp;&raquo;</p>
-</td>
-<td style="width: 170px; text-align: center;">
-<p>10111110</p>
-</td>
-</tr>
-<tr>
-<td style="width: 115px; text-align: center;">
-<p>BF</p>
-</td>
-<td style="width: 115px; text-align: center;">
-<p>&iquest;</p>
-</td>
-<td style="width: 170px; text-align: center;">
-<p>10111111</p>
-</td>
-</tr>
-<tr>
-<td style="width: 115px; text-align: center;">
-<p>C0</p>
-</td>
-<td style="width: 115px; text-align: center;">
-<p>&Agrave;</p>
-</td>
-<td style="width: 170px; text-align: center;">
-<p>11000000</p>
-</td>
-</tr>
-<tr>
-<td style="width: 115px; text-align: center;">
-<p>C1</p>
-</td>
-<td style="width: 115px; text-align: center;">
-<p>&Aacute;</p>
-</td>
-<td style="width: 170px; text-align: center;">
-<p>11000001</p>
-</td>
-</tr>
-<tr>
-<td style="width: 115px;">
-<p>&nbsp;</p>
-</td>
-<td style="width: 115px;">
-<p>. . .</p>
-</td>
-<td style="width: 170px;">
-<p>&nbsp;</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<ul>
-<li>analyser utskriften (spesielt for bytes fra 0x80 til 0x9F)</li>
-<li>utf&oslash;r programmet p&aring; alle gruppemedlemmers datamaskin og analyser</li>
-</ul>
-<p>&nbsp;</p>
-<h2><span style="font-size: 18pt;"><strong>Oppgave B</strong></span></h2>
-<p>Lag en funksjonen ExtendedASCIIText () i filen&nbsp;sorting.go , som skriver ut: " &euro; &divide; &frac34; dollar "</p>
-<h3>Kravspesifikasjon</h3>
-<ul>
-<li>Funksjonen skal generere en utskrift fra en sekvens av bytes, dvs. av typen []bytes (det betyr at du m&aring; finne den heksadesimale eller bin&aelig;re representasjonen av alle tegn i strengen, som skal skrives ut (inkludert anf&oslash;rselstegn eller &ldquo;double quotes&rdquo; p&aring; engelsk).</li>
-<li>Funksjonen ExtendedASCIIText () skal returnere en variabel av typen string, som inneholder tegn fra Extended</li>
-<li>Utf&oslash;r programmet p&aring; forskjellige platformer(mac,windows,linux) eller forskjellig software(terminal, bash, powershell) og analyser resultater</li>
-</ul>
-<p>&nbsp;</p>
-<h2><span style="font-size: 18pt;"><strong>Oppgave C</strong></span></h2>
-<p>Implementer en test for funksjonen ExtendedASCIIText(String) i egen fil iso_test.go, som tester om input-verdier (av type string) inneholder kun tegn fra en Extended ASCII.</p>
-<p>&nbsp;</p>
-<p><em>Ressurser:</em></p>
-<p><em>Runes: <a href="https://en.wikipedia.org/wiki/Runes">https://en.wikipedia.org/wiki/Runes</a></em></p>
-<p><em>ASCII Table: <a href="http://www.asciitable.com/">http://www.asciitable.com/</a></em></p>
-<p><em>Golang Stings, Bytes, Runes og Characters <a href="https://blog.golang.org/strings">https://blog.golang.org/strings</a></em></p>
-<p><em>Golang FMT package: <a href="https://golang.org/pkg/fmt/">https://golang.org/pkg/fmt/</a></em></p>
-<p><em>Golang Bytes package: <a href="https://golang.org/pkg/bytes/">https://golang.org/pkg/bytes/</a></em></p>
-<p><em>Golang Slices: <a href="https://blog.golang.org/slices">https://blog.golang.org/slices</a></em></p>
+Obligatorisk oppgave 1
+
+# 1   
+
+Binær|Hexa|Deci
+   ---|---|---
+1101|	0xD|	13
+110111101010|	0xDEA|	3562
+1010111100110100|	0xAF34|	44852
+1111111111111111|	0xFFFF|	65535
+00010001011110001010|	0x1178A|	71562
+
+## 1a)
+
+### Binær til hex og motsatt
+
+Ved å bruke denne tabellen, blir prosessen å konvertere binært til hexa og motsatt.
+
+Decimal|Hexadecimal|Binær
+---|---|---
+0|0|0
+1|1|1
+2|2|10
+3|3|11
+4|4|100
+5|5|101
+6|6|110
+7|7|111
+8|8|1000
+9|9|1001
+10|A|1010
+11|B|1100
+12|C|1100
+13|D|1101
+14|E|1110
+15|F|1111 
+
+Som eksempel å konvertere 1111001101011010 deler man det opp i 4
+og konverter. 1111=F    0011=3 	0101=5 	 1010=A  
+1111001101011010=F35A
+
+Å gå fra hexa til binært kan man følge den samme prosessen bare motsatt 
+
+Som eksempel
+0xDEA=	 D=1101	E=1110	A=1010	=1101111010101
+
+### Binær til Decimal
+
+Å gå fra binært til decimal må man utføre litt mer matteregning. 
+Først må man gange hvert av sifrene med 2 og opphøyd i plassen tallet står på. 
+Som eksempel bruker vi tallet 110010110.  
+(1\*2^8)+(1\*2^7)+(0\*2^6)+(0\*2^5)+(1\*2^4)+(0\*2^3)+(1\*2^2)+(1\*2^1)+(0\*2^0)=406
+
+### Decimal til Binær
+
+For å gå fra fra decimal til binær kan man sette opp denne typen tabell
+Som eksempel bruker vi tallet 156. 
+
+n |128|64|32|16|8|4|2|1
+--|--|--|--|--|--|--|--|--|
+156-128=28|1
+28<64||0
+28<32|||0
+28-16=12||||1
+12-8=4|||||1
+4-4=0||||||1
+0>2|||||||0
+0>1||||||||0
+
+156 = 10011100
+
+## 1b)
+
+### Hex til decimal
+Å gå fra hex til decimal ganger man med 16 potens  
+Vi bruker det samme eksempelet som tidligere 0xDEA.  
+D(13)E(14)A(10)=(13\*16^2)+(14\*16^1)+(10\*^16^0)  
+13\*256+14\*16+10\*1  
+3328+224+10=35620  
+
+### Decimal til hex
+Når man skal konvertere fra decimal til hex må man utføre en delingsprosess med 16 eller kan man gå via binær og  
+ende i hex.  
+Med eksempel bruker vi 100decimal  
+Da deler man på 2 og skriver 1 hvis det ikke kan deles på 2.  
+2:100=50    0  
+2:50=25     0  
+2:25=12     1  
+2:6=3       0  
+2:3=1       0  
+2:1=0		1  
+0			1	  
+Deretter snur man sekvensen slik 0010011 = 01100100  
+Så kan man separere binarystingen  
+0110=6  
+0100=4  
+100deci=0x64  
+
+
+
+# 2
+
+## 2a) og 2b)
+
+Se [sorting.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/algorithms/sorting.go) og [sorting_test.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/algorithms/sorting_test.go)
+
+## 2c)
+
+Benchmark resultater:  
+<img src="https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/cmd_benchmark.png">
+<img src="https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/benchmark_graph.png">
+
+# 3
+
+Loop: [loop.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/loop/loop.go)  
+<img src="https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/loop_cpuandmemory.png">
+
+# 4
+
+## 4a)
+
+Hverken GoLand eller Windows cmd vil printe karakterer for 0x80 til 0x9F (det blir firkanter, spørsmålstegn eller lignende). Resten av karakterene i extended ASCII blir printet ut.
+
+Se [ascii.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/ascii/ascii.go)
+
+## 4b)
+
+Se [ascii.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/ascii/ascii.go)
+
+## 4c)
+
+Se [iso_test.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/ascii/iso_test.go)
