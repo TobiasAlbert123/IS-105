@@ -45,6 +45,18 @@ func Info() {
 		fmt.Println("is not a named pipe")
 	}
 
+	if mode&os.ModeAppend != 0 {
+		fmt.Println("is append-only")
+	} else {
+		fmt.Println("is not append-only")
+	}
+
+	if mode&os.ModeDevice != 0 {
+		fmt.Println("is a device file")
+	} else {
+		fmt.Println("is not a device file")
+	}
+
 	/*
 	case mode.IsDir():
 		fmt.Println("directory")
