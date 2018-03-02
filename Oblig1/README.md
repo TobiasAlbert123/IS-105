@@ -102,18 +102,18 @@ Så kan man separere binarystingen
 
 ## 2a) og 2b)
 
-Se [sorting.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/algorithms/sorting.go) og [sorting_test.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/algorithms/sorting_test.go)
+Se [sorting.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/src/algorithms/sorting.go) og [sorting_test.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/src/algorithms/sorting_test.go)
 
 ## 2c)
 
 Benchmark resultater:  
-<img src="https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/cmd_benchmark.png">
-<img src="https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/benchmark_graph.png">
+<img src="https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/cmd_benchmark.png">
+<img src="https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/benchmark_graph.png">
 
 # 3
 
-Loop: [loop.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/loop/loop.go)  
-<img src="https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/loop_cpuandmemory.png">
+Loop: [loop.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/src/loop/loop.go)  
+<img src="https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/loop_cpuandmemory.png">
 
 # 4
 
@@ -121,12 +121,12 @@ Loop: [loop.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligator
 
 Hverken GoLand eller Windows cmd vil printe karakterer for 0x80 til 0x9F (det blir firkanter, spørsmålstegn eller lignende). Resten av karakterene i extended ASCII blir printet ut.
 
-Se [ascii.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/ascii/ascii.go)
+Se [ascii.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/src/ascii/ascii.go)
 
 ## 4b)
 
-Se [ascii.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/ascii/ascii.go)
+Se [ascii.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/src/ascii/ascii.go)
 
 ## 4c)
 
-Se [iso_test.go](https://github.com/TobiasAlbert123/midgets/blob/master/Obligatorisk1/ascii/iso_test.go)
+Se [iso_test.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig1/src/ascii/iso_test.go)
