@@ -6,7 +6,6 @@ import (
 	"log"
 )
 
-
 func main () {
 	//takes argument from cmd line
 	args := os.Args
@@ -44,7 +43,6 @@ func fileSize(input string) {
 
 }
 
-
 func fileInfo(input string) {
 	//finds file with name input in set folder
 	path := srcFolder + input
@@ -54,6 +52,8 @@ func fileInfo(input string) {
 	}
 
 	mode := fi.Mode()
+
+	fmt.Println("The file:")
 
 	//Check if directory
 	if mode.IsDir() {
