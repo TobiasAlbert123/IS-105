@@ -1,14 +1,46 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"bufio"
+)
 
+
+//to run in cmd:
+//1. Have same map architecture as git
+//2. cd [repository path]/oppgave2
+//3. go run filecount.go text.txt
 func main() {
-	fmt.Println("Programmet skal lese en tekst-fil, skrive ut totalt antall linjer og antall for fem runes som forekommer hyppigst i filen")
+	//takes argument from cmd line
+	args := os.Args
+	if len(args) == 0 {
+		fmt.Println("Argument missing")
+		fmt.Println("Type 'go run fileinfo.go text.txt'")
+	}
+
+	fileName := args[1]
+	countLines(fileName)
+
 	makeMap()
 	somevalues()
 	printtest()
 	fmt.Println(RuneMap)
+
+
+}
+
+var srcFolder = "../files/"
+
+func countLines(input string) {
+	file, _ := os.Open(srcFolder + input)
+	fileScanner := bufio.NewScanner(file)
+	lineCount := 0
+	for fileScanner.Scan() {
+		lineCount++
 	}
+	fmt.Printf("'text.txt' has %d lines", lineCount)
+}
 
 var RuneMap = make(map[rune]int)
 
