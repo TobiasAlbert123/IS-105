@@ -4,100 +4,107 @@ import (
 	"fmt"
 	"os"
 	"log"
-	"bufio"
 )
 
-func main2(input string) {
-	fmt.Println("Programmet skal returnere informasjon om en fil")
-	fileSize(input)
-	Info(input)
-}
 
-func printAnInput () {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter text: ")
-	text, _ := reader.ReadString('\n')
-	fmt.Println(text)
-
-}
 func main () {
+	//takes argument from cmd line
+	args := os.Args
+	if len(args) == 0 {
+		fmt.Println("Argument missing")
+		fmt.Println("Type 'go run fileinfo.go text.txt'")
+	}
 
-	argsWithProg := os.Args
-	argsWithoutProg := os.Args[1:]
+	fileName := args[1]
 
-	arg := os.Args[3]
-	fmt.Println(argsWithProg)
-	fmt.Println(argsWithoutProg)
-	fmt.Println(arg)
-
-	main2(arg)
+	fmt.Printf("Info for file '%s':\n", fileName)
+	fileSize(fileName)
+	fileInfo(fileName)
 }
+
+//Relative path: Oblig2/src/files
+var srcFolder = "../files/"
 
 func fileSize(input string) {
-	path := "Oblig2/src/files/" + input
-	fi, err := os.Stat(path)
-	if err != nil {
+	//finds file with name input in set folder
+	path := srcFolder + input
+	file, err := os.Stat(path)
+		if err != nil {
+			ErrorHandling(err)
+		}
 
-	}
-	bytes := fi.Size()
-	kiloBytes := fi.Size()/1024
-	megaBytes := kiloBytes/1024
-	gigaBytes := megaBytes/1024
-	fmt.Printf("The file has size (rounded down):\n%d bytes\n%d KB\n%d MB\n%d GB\n\n", bytes, kiloBytes, megaBytes, gigaBytes)
+	bytes := file.Size()
+	//bytes as float (for decimal numbers)
+	fBytes := float64(bytes)
+
+	//Prints bytes, KB, MB & GB
+	fmt.Printf("The file has size:\n")
+	fmt.Printf("%d	bytes\n", bytes)
+	fmt.Printf("%.2f	KB \n%.2f	MB \n%.2f	GB \n\n", fBytes / (1024), fBytes / (1024 * 1024), fBytes / (1024 * 1024* 1024) )
 
 }
 
-func Info(input string) {
-	path := "Oblig2/src/files/" + input
+
+func fileInfo(input string) {
+	//finds file with name input in set folder
+	path := srcFolder + input
 	fi, err := os.Lstat(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("The file")
-
 	mode := fi.Mode()
 
+	//Check if directory
 	if mode.IsDir() {
 		fmt.Println("is a directory")
 	} else {
 		fmt.Println("is not a directory")
 	}
 
+	//Check if regular file
 	if mode.IsRegular() {
 		fmt.Println("is a regular file")
 	} else {
 		fmt.Println("is not a regular file")
 	}
 
-	// Has Unix permission bits: -rwxrwxrwx
+	//Check if file has UNIX permission bits
+	fmt.Printf("has UNIX permission bits %s\n", mode.Perm())
 
-
+	//Check if append-only
 	if mode&os.ModeAppend != 0 {
 		fmt.Println("is append-only")
 	} else {
 		fmt.Println("is not append-only")
 	}
 
+	//Check if device file
 	if mode&os.ModeDevice != 0 {
 		fmt.Println("is a device file")
 	} else {
 		fmt.Println("is not a device file")
 	}
 
-	// Is/Is not a Unix character device
+	//Check if UNIX character device
+	if mode&os.ModeCharDevice != 0 {
+		fmt.Println ("is a UNIX character device")
+	} else {
+		fmt.Println("is not a UNIX character device")
+	}
 
-	// Is/Is not a Unix block device
+	//Check if UNIX block device
+	//MISSING
 
+	//Check if symbolic link
 	if mode&os.ModeSymlink != 0 {
 		fmt.Println("is a symbolic link")
 	} else {
 		fmt.Println("is not a symbolic link")
 	}
+}
 
-	if mode&os.ModeNamedPipe != 0 {
-		fmt.Println("is a named pipe")
-	} else {
-		fmt.Println("is not a named pipe")
-	}
+//Logs error (somewhere?)
+func ErrorHandling(input error) {
+	log.Fatal(input)
 }
