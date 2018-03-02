@@ -6,6 +6,10 @@ import (
 	"log"
 )
 
+//to run in cmd:
+//1. Have same map architecture as git
+//2. cd [repository path]/oppgave1
+//3. go run fileinfo.go text.txt
 func main () {
 	//takes argument from cmd line
 	args := os.Args
