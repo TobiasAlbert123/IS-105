@@ -5,21 +5,19 @@ import (
 )
 
 func main() {
-	//fmt.Println("Legg sammen to tall fra terminal og summer i en annen funksjon")
-	//fmt.Println(addUp(10, 10))
-	addUp(input())
+	input()
 }
 
-func input() (int, int) {
+func input() {
 	var number1 int
 	var number2 int
-	fmt.Println("Enter first number")
-	_, err := fmt.Scanf("%d", &number1)
-	fmt.Println("Enter second number")
-	_, err = fmt.Scanf("%d", &number2)
+	fmt.Print("Enter first number: ")
+	_, err := fmt.Scanf("%d\n", &number1)
+	fmt.Print("Enter second number: ")
+	_, err = fmt.Scanf("%d\n", &number2)
 	if err != nil {
 	}
-	return number1, number2
+	fmt.Printf("Total number = %d", addUp(number1, number2))
 }
 
 func addUp(tall, tall2 int) int{
