@@ -89,23 +89,6 @@ func fileInfo(input string) {
 	} else {
 		fmt.Println("is not a device file")
 	}
-
-	//Check if UNIX character device
-	if mode&os.ModeCharDevice != 0 {
-		fmt.Println ("is a UNIX character device")
-	} else {
-		fmt.Println("is not a UNIX character device")
-	}
-
-	//Check if UNIX block device
-	//MISSING
-
-	//Check if symbolic link
-	if mode&os.ModeSymlink != 0 {
-		fmt.Println("is a symbolic link")
-	} else {
-		fmt.Println("is not a symbolic link")
-	}
 }
 
 //Logs error (somewhere?)
