@@ -21,19 +21,28 @@ func main () {
 	fileName := args[1]
 
 	fmt.Printf("Info for file '%s':\n", fileName)
-	fileSize(fileName)
-	fileInfo(fileName)
+	fileSize(getFile())
+	fileInfo(getFile())
 }
 
-//Relative path: Oblig2/src/files
-var srcFolder = "../files/"
+//Gets filename from run argument and adds filepath to the files folder
+func getFile() string{
+	args := os.Args
+	if len(args) == 0 {
+		fmt.Println("Argument missing")
+		fmt.Println("Type 'go run fileinfo.go text.txt'")
+	}
+	fileName := args[1]
+	srcFolder := "../files/"
+	filePath := srcFolder + fileName
+	return filePath
+}
 
-func fileSize(input string) {
-	//finds file with name input in set folder
-	path := srcFolder + input
-	file, err := os.Stat(path)
+func fileSize(filePath string) {
+	//finds file at filePath
+	file, err := os.Stat(filePath)
 		if err != nil {
-			ErrorHandling(err)
+			FileError(err)
 		}
 
 	bytes := file.Size()
@@ -47,12 +56,11 @@ func fileSize(input string) {
 
 }
 
-func fileInfo(input string) {
-	//finds file with name input in set folder
-	path := srcFolder + input
-	fi, err := os.Lstat(path)
+func fileInfo(filePath string) {
+	//finds file at filePath
+	fi, err := os.Lstat(filePath)
 	if err != nil {
-		log.Fatal(err)
+		FileError(err)
 	}
 
 	mode := fi.Mode()
@@ -89,9 +97,23 @@ func fileInfo(input string) {
 	} else {
 		fmt.Println("is not a device file")
 	}
+
+	//Check if symbolic link
+	if mode&os.ModeSymlink != 0 {
+		fmt.Println("is a symbolic link")
+	} else {
+		fmt.Println("is not a symbolic link")
+	}
 }
 
-//Logs error (somewhere?)
-func ErrorHandling(input error) {
+//Prints a helpful error message
+func FileError(input error) {
+	fmt.Printf("Error: %s\n", input)
+	fmt.Println()
+	fmt.Println("============================================")
+	fmt.Println("Make sure text.txt is in 'files' folder, then type")
+	fmt.Println("'go run fileinfo.go text.txt' ('fileinfo text.txt' if running .exe file")
+	fmt.Println("============================================")
+	fmt.Println()
 	log.Fatal(input)
 }
