@@ -11,16 +11,7 @@ import (
 //2. cd [repository path]/oppgave1
 //3. go run fileinfo.go text.txt
 func main () {
-	//takes argument from cmd line
-	args := os.Args
-	if len(args) == 0 {
-		fmt.Println("Argument missing")
-		fmt.Println("Type 'go run fileinfo.go text.txt'")
-	}
-
-	fileName := args[1]
-
-	fmt.Printf("Info for file '%s':\n", fileName)
+	fmt.Printf("Info for file '%s':\n", getFile())
 	fileSize(getFile())
 	fileInfo(getFile())
 }
@@ -53,7 +44,6 @@ func fileSize(filePath string) {
 	fmt.Printf("The file has size:\n")
 	fmt.Printf("%d	bytes\n", bytes)
 	fmt.Printf("%.2f	KB \n%.2f	MB \n%.2f	GB \n\n", fBytes / (1024), fBytes / (1024 * 1024), fBytes / (1024 * 1024* 1024) )
-
 }
 
 func fileInfo(filePath string) {
