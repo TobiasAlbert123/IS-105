@@ -15,8 +15,7 @@ import (
 func main() {
 	countLines(getFile())
 	MapMaker(getFile())
-	//fmt.Println(RuneMap)
-	sortMap()
+	xMostUsed(5)
 }
 
 //Gets filename from run argument and adds filepath to the files folder
@@ -86,9 +85,9 @@ func addToMap(singleLetter string) {
 	}
 }
 
-func sortMap() {
-	//Loop repeats 5 times
-	for i := 1; i <= 5; i++ {
+func xMostUsed(x int) {
+	//Loop repeats x times
+	for i := 1; i <= x; i++ {
 		number := i
 		highestCount := 0
 		mostUsed := ""
