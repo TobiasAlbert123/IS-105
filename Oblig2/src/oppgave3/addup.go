@@ -16,8 +16,11 @@ func input() {
 	fmt.Print("Enter second number: ")
 	_, err = fmt.Scanf("%d\n", &number2)
 	if err != nil {
+		fmt.Printf("\n\nERROR: %s\nReason: You did not enter 2 valid integers\n", err)
+	} else {
+		fmt.Printf("Total number = %d", addUp(number1, number2))
 	}
-	fmt.Printf("Total number = %d", addUp(number1, number2))
+
 }
 
 func addUp(tall, tall2 int) int{
