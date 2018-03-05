@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-
 //to run in cmd:
 //1. Have same map architecture as git
 //2. cd [repository path]/oppgave2
@@ -88,20 +87,34 @@ func addToMap(singleLetter string) {
 }
 
 func sortMap() {
-	for i := 1; i < 6; i++ {
+	//Loop repeats 5 times
+	for i := 1; i <= 5; i++ {
 		number := i
 		highestCount := 0
 		mostUsed := ""
+
+		//Compares every found letter's mentions against the current highestCount
 		for i := 0; i < len(foundLetters); i++ {
 			runeOfString := []rune(foundLetters[i])
 			mentions := RuneMap[runeOfString[0]]
+
+			//Sets new highest count
 			if mentions > highestCount {
 				highestCount = mentions
 				mostUsed = foundLetters[i]
 			}
 		}
 		mostUsedRune := []rune(mostUsed)
+
+		//special condition to better distinguish a space in the stats
+		if mostUsed == " " {
+			mostUsed = "(space)"
+		}
+
+		//prints #i highest number
 		fmt.Printf("%d. Rune: '%s' , Counts: %d\n", number, mostUsed, highestCount)
+
+		//deletes the current highest number
 		delete(RuneMap, mostUsedRune[0])
 	}
 }
