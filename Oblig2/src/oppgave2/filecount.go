@@ -25,21 +25,24 @@ func getFile() string{
 		fmt.Println("Argument missing")
 		fmt.Println("Type 'go run fileinfo.go text.txt'")
 	}
-	fileName := args[1]
+	filename = args[1]
 	srcFolder := "../files/"
-	filePath := srcFolder + fileName
+	filePath := srcFolder + filename
 	return filePath
 }
 
+var filename string
+
 //counts lines in file
 func countLines(filePath string) {
+	fmt.Printf("Information about '%s':\n", filename)
 	file, _ := os.Open(filePath)
 	fileScanner := bufio.NewScanner(file)
 	lineCount := 0
 	for fileScanner.Scan() {
 		lineCount++
 	}
-	fmt.Printf("'text.txt' has %d lines\n", lineCount)
+	fmt.Printf("Number of lines in file: %d\n", lineCount)
 }
 
 //initialises map containing runes and int
@@ -86,6 +89,7 @@ func addToMap(singleLetter string) {
 }
 
 func xMostUsed(x int) {
+	fmt.Println("Most common runes:")
 	//Loop repeats x times
 	for i := 1; i <= x; i++ {
 		number := i
