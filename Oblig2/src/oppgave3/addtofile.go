@@ -15,7 +15,7 @@ func WriteNumbers(number1, number2 int) {
 		fmt.Println("Error creating file")
 	}
 	defer file.Close()
-	_, err = file.WriteString(fmt.Sprintf("%d\n%d\n" , number1, number2))
+	_, err = file.WriteString(fmt.Sprintf("%d%d" , number1, number2))
 	if err != nil {
 		fmt.Println("Error writing")
 	} else {

@@ -18,38 +18,33 @@ func main() {
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"strconv"
 	"strings"
-	"os"
+	"io/ioutil"
 )
 
-// ReadInts reads whitespace-separated ints from r. If there's an error, it
-// returns the ints successfully read so far as well as the error value.
-func ReadInts(r io.Reader) ([]int, error) {
-	scanner := bufio.NewScanner(r)
-	scanner.Split(bufio.ScanWords)
-	var result []int
-	for scanner.Scan() {
-		x, err := strconv.Atoi(scanner.Text())
-		if err != nil {
-			return result, err
-		}
-		result = append(result, x)
-	}
-	return result, scanner.Err()
+func addup(tall, tall2 int) int{
+	return tall + tall2
 }
 
 func main() {
-	tf := "1\n2\n3\n4\n5\n6"
 	fmt.Println("Oppgave 3")
-	file, err := os.Open("Oblig2/src/oppgave3/testfile.txt")
+	file, err := ioutil.ReadFile("Oblig2/src/oppgave3/testfile.txt")
 	if err != nil {
 
 	}
-	ints, err := ReadInts(strings.NewReader(file))
-	fmt.Println(ints, err)
+	fileString := string(file)
+	splitString := []string(strings.Split(fileString, ""))
+	var ints [2]int
+	for i := 0; i < len(splitString); i++ {
+		ints[i], err = strconv.Atoi(splitString[i])
+		if err != nil {
+			fmt.Println("int conversion error")
+		}
+	}
+	fmt.Printf("Total is %d\n", addup(ints[0], ints[1]))
+	//ints, err := ReadInts(strings.NewReader(file))
+	//fmt.Println(ints, err)
 	//was looking at https://stackoverflow.com/questions/9862443/golang-is-there-a-better-way-read-a-file-of-integers-into-an-array
 }

@@ -8,6 +8,7 @@ func main() {
 	input()
 }
 
+//Funksjon A
 func input() {
 	var number1 int
 	var number2 int
@@ -20,9 +21,9 @@ func input() {
 	} else {
 		fmt.Printf("Total number = %d", addUp(number1, number2))
 	}
-
 }
 
+//Funksjon B
 func addUp(tall, tall2 int) int{
 	return tall + tall2
 }
