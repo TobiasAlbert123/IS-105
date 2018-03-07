@@ -20,7 +20,7 @@ func PrintResult() {
 	fileString := string(file)
 	total, err := strconv.Atoi(fileString)
 	if err != nil {
-
+		HandleError()
 	}
 	fmt.Printf("Total is %d\n", total)
 }
@@ -49,4 +49,8 @@ func Input() (int, int) {
 	if err != nil {
 	}
 	return number1, number2
+}
+
+func HandleError() {
+
 }
