@@ -6,6 +6,7 @@ import (
 	"strings"
 	"io/ioutil"
 	"os"
+	"syscall"
 )
 
 func addup(tall, tall2 int) int{
