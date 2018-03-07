@@ -7,13 +7,15 @@ import (
 	"strconv"
 )
 
+var testfile = "testfile.txt"
+
 func AddToFile() {
 	WriteNumbers(Input())
 }
 
 func PrintResult() {
-	fmt.Println("Oppgave 3")
-	file, err := ioutil.ReadFile("../testfile.txt")
+	fmt.Printf("Printing sum from %s\n", testfile)
+	file, err := ioutil.ReadFile(testfile)
 	if err != nil {
 
 	}
@@ -26,7 +28,8 @@ func PrintResult() {
 }
 
 func WriteNumbers(number1, number2 int) {
-	file, err := os.Create("../testfile.txt")
+	//file should appear in Oblig2 dir
+	file, err := os.Create(testfile)
 	if err != nil {
 		fmt.Println("Error creating file")
 	}
@@ -35,7 +38,7 @@ func WriteNumbers(number1, number2 int) {
 	if err != nil {
 		fmt.Println("Error writing")
 	} else {
-		fmt.Printf("Wrote numbers %d and %d to testfile.txt\n", number1, number2)
+		fmt.Printf("Wrote numbers %d and %d to %s\n", number1, number2, testfile)
 	}
 }
 

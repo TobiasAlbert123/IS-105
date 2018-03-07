@@ -6,33 +6,14 @@ import (
 	"strings"
 	"io/ioutil"
 	"os"
-	"syscall"
 )
 
 func addup(tall, tall2 int) int{
 	return tall + tall2
 }
 
-//var testfile = "Oblig2/src/oppgave3/testfile.txt"
-
-/*func main() {
-	filen, err := ioutil.ReadFile(testfile)
-	file, err := os.Open(testfile)
-	if err != nil {
-
-	}
-	fileScanner := bufio.NewScanner(file)
-	fileString := string(filen)
-	splitString := []string(strings.Split(fileString, "\n"))
-
-	for fileScanner.Scan() {
-		fmt.Println(filen)
-	}
-
-}*/
-
 func WriteSum(number int) {
-	file, err := os.Create("../testfile.txt")
+	file, err := os.Create(testfile)
 	if err != nil {
 		fmt.Println("Error creating file")
 	}
@@ -41,13 +22,13 @@ func WriteSum(number int) {
 	if err != nil {
 		fmt.Println("Error writing")
 	} else {
-		fmt.Printf("Wrote sum %d to testfile.txt\n", number)
+		fmt.Printf("Wrote sum %d to %s\n", number, testfile)
 	}
 }
 
 func SumFromFile() int{
 	fmt.Println("Oppgave 3")
-	file, err := ioutil.ReadFile("../testfile.txt")
+	file, err := ioutil.ReadFile(testfile)
 	if err != nil {
 
 	}
@@ -63,7 +44,4 @@ func SumFromFile() int{
 	total := addup(ints[0], ints[1])
 	fmt.Printf("Total is %d\n", total)
 	return total
-	//ints, err := ReadInts(strings.NewReader(file))
-	//fmt.Println(ints, err)
-	//was looking at https://stackoverflow.com/questions/9862443/golang-is-there-a-better-way-read-a-file-of-integers-into-an-array
 }
