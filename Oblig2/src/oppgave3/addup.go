@@ -3,9 +3,17 @@ package main
 import (
 	"fmt"
 	"time"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
+var channel = make(chan os.Signal, 2)
+
 func main() {
+	signal.Notify(channel, os.Interrupt, syscall.SIGINT)
+	go ctrlc()
+
 	go funcA()
 	go funcB()
 	//Program sleeps for 20 secs before finishing
@@ -37,4 +45,10 @@ func funcA() {
 func funcB() {
 	sum := <- ch + <- ch
 	ch2 <- sum
+}
+
+func ctrlc() {
+	<- channel
+	fmt.Printf("\nCTRL+C stopped the program before it finished\n")
+	os.Exit(1)
 }

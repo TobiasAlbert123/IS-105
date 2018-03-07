@@ -5,6 +5,7 @@ import (
 	"os"
 	"io/ioutil"
 	"strconv"
+	"time"
 )
 
 var testfile = "testfile.txt"
@@ -28,7 +29,8 @@ func PrintResult() {
 }
 
 func WriteNumbers(number1, number2 int) {
-	//file should appear in Oblig2 dir
+	//file will appear in Oblig2 dir if run in Goland
+	//file will appear in 3b_run dir if run in Windows cmd
 	file, err := os.Create(testfile)
 	if err != nil {
 		fmt.Println("Error creating file")
@@ -46,10 +48,16 @@ func Input() (int, int) {
 	var number1 int
 	var number2 int
 	fmt.Println("Enter first number")
-	_, err := fmt.Scanf("%d", &number1)
-	fmt.Println("Enter second number")
-	_, err = fmt.Scanf("%d", &number2)
+	_ , err := fmt.Scanf("%d", &number1)
 	if err != nil {
+		fmt.Println("Could not write first number")
+	}
+	fmt.Println("Enter second number")
+	time.Sleep(time.Duration(1)*time.Second)
+	_, err2 := fmt.Scanf("%d", &number2)
+	if err2 != nil {
+		//this line is needed for program to run in Windows cmd for some reason
+		_, _ = fmt.Scanf("%d", &number2)
 	}
 	return number1, number2
 }

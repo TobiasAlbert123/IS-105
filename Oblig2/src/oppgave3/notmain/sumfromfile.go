@@ -27,7 +27,6 @@ func WriteSum(number int) {
 }
 
 func SumFromFile() int{
-	fmt.Println("Oppgave 3")
 	file, err := ioutil.ReadFile(testfile)
 	if err != nil {
 
@@ -42,6 +41,5 @@ func SumFromFile() int{
 		}
 	}
 	total := addup(ints[0], ints[1])
-	fmt.Printf("Total is %d\n", total)
 	return total
 }
