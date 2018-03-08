@@ -23,12 +23,14 @@ func getFile() string{
 		fmt.Println("Argument missing")
 		fmt.Println("Type 'go run fileinfo.go text.txt'")
 	}
+	//first argument
 	fileName := args[1]
 	srcFolder := "../files/"
 	filePath := srcFolder + fileName
 	return filePath
 }
 
+//prints the size of the file
 func fileSize(filePath string) {
 	//finds file at filePath
 	file, err := os.Stat(filePath)
@@ -46,14 +48,15 @@ func fileSize(filePath string) {
 	fmt.Printf("%.2f	KB \n%.2f	MB \n%.2f	GB \n\n", fBytes / (1024), fBytes / (1024 * 1024), fBytes / (1024 * 1024* 1024) )
 }
 
+//prints certain information about the file
 func fileInfo(filePath string) {
 	//finds file at filePath
-	fi, err := os.Lstat(filePath)
+	fileStats, err := os.Lstat(filePath)
 	if err != nil {
 		FileError(err)
 	}
 
-	mode := fi.Mode()
+	mode := fileStats.Mode()
 
 	fmt.Println("The file:")
 
@@ -97,13 +100,13 @@ func fileInfo(filePath string) {
 }
 
 //Prints a helpful error message
-func FileError(input error) {
-	fmt.Printf("Error: %s\n", input)
+func FileError(err error) {
+	fmt.Printf("Error: %s\n", err)
 	fmt.Println()
 	fmt.Println("============================================")
 	fmt.Println("Make sure text.txt is in 'files' folder, then type")
 	fmt.Println("'go run fileinfo.go text.txt' ('fileinfo text.txt' if running .exe file")
 	fmt.Println("============================================")
 	fmt.Println()
-	log.Fatal(input)
+	log.Fatal(err)
 }

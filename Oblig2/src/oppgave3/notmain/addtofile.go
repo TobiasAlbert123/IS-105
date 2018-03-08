@@ -5,7 +5,11 @@ import (
 	"os"
 	"io/ioutil"
 	"strconv"
+	"time"
 )
+
+//all os.Exit have 2s delay to allow the SIGINT exit message to be shown
+//instead of other error messages
 
 //name of file that all funcs read / write from
 var testfile = "readwritenumbers.txt"
@@ -21,6 +25,7 @@ func Input() (int, int) {
 	_ , err := fmt.Scanf("%d", &number1)
 	if err != nil {
 		fmt.Println("Could not write first number")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 
@@ -32,7 +37,8 @@ func Input() (int, int) {
 		_, err = fmt.Scanf("%d", &number2)
 		if err != nil {
 			fmt.Println("Could not write second number")
-			os.Exit(1)
+			time.Sleep(2*time.Second)
+		os.Exit(1)
 		}
 	}
 
@@ -46,6 +52,7 @@ func WriteNumbers(number1, number2 int) {
 	file, err := os.Create(testfile)
 	if err != nil {
 		fmt.Println("Error creating file")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 	//defer waits for function to finish before file closes
@@ -55,6 +62,7 @@ func WriteNumbers(number1, number2 int) {
 	_, err = file.WriteString(fmt.Sprintf("%d\n%d" , number1, number2))
 	if err != nil {
 		fmt.Println("Error writing numbers")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 
@@ -67,12 +75,14 @@ func PrintResult() {
 	file, err := ioutil.ReadFile(testfile)
 	if err != nil {
 		fmt.Println("Could not read sum from file")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 	fileString := string(file)
 	total, err := strconv.Atoi(fileString)
 	if err != nil {
 		fmt.Println("Could not convert sum to int")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 

@@ -6,7 +6,11 @@ import (
 	"strings"
 	"io/ioutil"
 	"os"
+	"time"
 )
+
+//all os.Exit have 2s delay to allow the SIGINT exit message to be shown
+//instead of other error messages
 
 //sums numbers from file
 func SumFromFile() int{
@@ -14,6 +18,7 @@ func SumFromFile() int{
 	file, err := ioutil.ReadFile(testfile)
 	if err != nil {
 		fmt.Printf("\n%s could not be read\n", testfile)
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 	//Converts file to a single string
@@ -29,7 +34,8 @@ func SumFromFile() int{
 		ints[i], err = strconv.Atoi(splitString[i])
 		if err != nil {
 			fmt.Println("Could not convert numbers in file to int")
-			os.Exit(1)
+			time.Sleep(2*time.Second)
+		os.Exit(1)
 		}
 	}
 	//sums position 0 and 1 of int slice
@@ -44,6 +50,7 @@ func WriteSum(number int) {
 	file, err := os.Create(testfile)
 	if err != nil {
 		fmt.Println("Error creating file")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 	//defer waits for function to finish before file closes
@@ -53,6 +60,7 @@ func WriteSum(number int) {
 	_, err = file.WriteString(fmt.Sprintf("%d", number))
 	if err != nil {
 		fmt.Println("Error writing sum")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	} else {
 		fmt.Printf("Wrote sum %d to %s\n", number, testfile)

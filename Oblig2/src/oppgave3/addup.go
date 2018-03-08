@@ -8,13 +8,16 @@ import (
 	"syscall"
 )
 
+//all os.Exit have 2s delay to allow the SIGINT exit message to be shown
+//instead of other error messages
+
 //channel for SIGINT signal
 var sigintCh = make(chan os.Signal, 2)
 
 func main() {
 	//SIGINT handling
 	signal.Notify(sigintCh, os.Interrupt, syscall.SIGINT)
-	go ctrlc()
+	go stop()
 
 	go funcA()
 	go funcB()
@@ -23,7 +26,8 @@ func main() {
 	//to prevent program from finishing before funcs are done
 	time.Sleep(time.Duration(1)*time.Minute)
 	fmt.Printf("\n\nProgram timed out, please finish the program within 1 minute next time\n")
-	os.Exit(1)
+	time.Sleep(time.Duration(500))
+		os.Exit(1)
 }
 
 var ch = make(chan int, 2)
@@ -39,14 +43,18 @@ func funcA() {
 	//program stops if first number has an error
 	if err != nil {
 		fmt.Printf("first number is invalid, please type an integer\n")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 	//first number sent to first channel
 	ch <- number1
 	fmt.Print("Enter second number: ")
 	_, err = fmt.Scanf("%d\n", &number2)
+
+	//program stops if second number has an error
 	if err != nil {
 		fmt.Printf("second number is invalid, please type an integer\n")
+		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
 	//second number sent to first channel
@@ -70,7 +78,7 @@ func funcB() {
 }
 
 //listens for SIGINT signal from sigintCh
-func ctrlc() {
+func stop() {
 	<- sigintCh
 	fmt.Printf("\nCTRL+C stopped the program before it finished\n")
 	os.Exit(1)

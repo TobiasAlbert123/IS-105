@@ -20,17 +20,21 @@ func main() {
 
 //Gets filename from run argument and adds filepath to the files folder
 func getFile() string{
+	//arguments
 	args := os.Args
+	//makes sure there is an argument
 	if len(args) == 0 {
 		fmt.Println("Argument missing")
 		fmt.Println("Type 'go run fileinfo.go text.txt'")
 	}
+	//first argument
 	filename = args[1]
 	srcFolder := "../files/"
 	filePath := srcFolder + filename
 	return filePath
 }
 
+//filename initialisation for printing purposes
 var filename string
 
 //counts lines in file
@@ -42,6 +46,7 @@ func countLines(filePath string) {
 	for fileScanner.Scan() {
 		lineCount++
 	}
+
 	fmt.Printf("Number of lines in file: %d\n", lineCount)
 }
 
@@ -58,6 +63,7 @@ func MapMaker(text string) {
 	fileString := string(file)
 	splitString := []string(strings.Split(fileString, ""))
 
+	//feeds letters to map
 	for i:= 0; i < len(splitString); i++ {
 		addToMap(splitString[i])
 	}
@@ -69,6 +75,7 @@ var foundLetters []string
 //adds values to map
 func addToMap(singleLetter string) {
 	foundIt := false
+	//compares input with foundLetters
 	for i:= 0; i < len(foundLetters); i++ {
 		if singleLetter == foundLetters[i] {
 			foundIt = true
@@ -88,6 +95,7 @@ func addToMap(singleLetter string) {
 	}
 }
 
+//prints x most used runes
 func xMostUsed(x int) {
 	fmt.Println("Most common runes:")
 	//Loop repeats x times
@@ -107,6 +115,7 @@ func xMostUsed(x int) {
 				mostUsed = foundLetters[i]
 			}
 		}
+		//converts mostUsed string to rune slice for deletion in RuneMap later
 		mostUsedRune := []rune(mostUsed)
 
 		//special condition to better distinguish a space in the stats
