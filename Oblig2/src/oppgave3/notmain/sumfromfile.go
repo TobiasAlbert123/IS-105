@@ -8,24 +8,7 @@ import (
 	"os"
 )
 
-func addup(tall, tall2 int) int{
-	return tall + tall2
-}
-
-func WriteSum(number int) {
-	file, err := os.Create(testfile)
-	if err != nil {
-		fmt.Println("Error creating file")
-	}
-	defer file.Close()
-	_, err = file.WriteString(fmt.Sprintf("%d", number))
-	if err != nil {
-		fmt.Println("Error writing")
-	} else {
-		fmt.Printf("Wrote sum %d to %s\n", number, testfile)
-	}
-}
-
+//sums numbers from file
 func SumFromFile() int{
 	file, err := ioutil.ReadFile(testfile)
 	if err != nil {
@@ -37,9 +20,27 @@ func SumFromFile() int{
 	for i := 0; i < len(splitString); i++ {
 		ints[i], err = strconv.Atoi(splitString[i])
 		if err != nil {
-			fmt.Println("int conversion error")
+			fmt.Println("Could not convert numbers in file to int")
+			os.Exit(1)
 		}
 	}
-	total := addup(ints[0], ints[1])
+	total := ints[0] + ints[1]
 	return total
+}
+
+//writes sum to the file
+func WriteSum(number int) {
+	file, err := os.Create(testfile)
+	if err != nil {
+		fmt.Println("Error creating file")
+		os.Exit(1)
+	}
+	defer file.Close()
+	_, err = file.WriteString(fmt.Sprintf("%d", number))
+	if err != nil {
+		fmt.Println("Error writing sum")
+		os.Exit(1)
+	} else {
+		fmt.Printf("Wrote sum %d to %s\n", number, testfile)
+	}
 }
