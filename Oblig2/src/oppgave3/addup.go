@@ -19,6 +19,7 @@ func main() {
 	signal.Notify(sigintCh, os.Interrupt, syscall.SIGINT)
 	go stop()
 
+	//go funcs run simultaneously
 	go funcA()
 	go funcB()
 

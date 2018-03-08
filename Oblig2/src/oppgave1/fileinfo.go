@@ -11,10 +11,11 @@ import (
 //2. cd [repository path]/oppgave1
 //3. go run fileinfo.go text.txt
 func main () {
-	fmt.Printf("Info for file '%s':\n", getFile())
 	fileSize(getFile())
 	fileInfo(getFile())
 }
+
+var fileName string
 
 //Gets filename from run argument and adds filepath to the files folder
 func getFile() string{
@@ -24,7 +25,7 @@ func getFile() string{
 		fmt.Println("Type 'go run fileinfo.go text.txt'")
 	}
 	//first argument
-	fileName := args[1]
+	fileName = args[1]
 	srcFolder := "../files/"
 	filePath := srcFolder + fileName
 	return filePath
@@ -32,6 +33,8 @@ func getFile() string{
 
 //prints the size of the file
 func fileSize(filePath string) {
+	fmt.Printf("Information about file '%s':\n", fileName)
+
 	//finds file at filePath
 	file, err := os.Stat(filePath)
 		if err != nil {
@@ -42,7 +45,7 @@ func fileSize(filePath string) {
 	//bytes as float (for decimal numbers)
 	fBytes := float64(bytes)
 
-	//Prints bytes, KB, MB & GB
+	//Prints bytes, KB, MB & GB. 2 decimal places for all but bytes
 	fmt.Printf("The file has size:\n")
 	fmt.Printf("%d	bytes\n", bytes)
 	fmt.Printf("%.2f	KB \n%.2f	MB \n%.2f	GB \n\n", fBytes / (1024), fBytes / (1024 * 1024), fBytes / (1024 * 1024* 1024) )
