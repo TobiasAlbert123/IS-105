@@ -49,6 +49,7 @@ func Input() (int, int) {
 func WriteNumbers(number1, number2 int) {
 	//file should appear in Oblig2 dir if run in Goland
 	//file should appear in 3b_run dir if run in Windows cmd
+	//file should appear in bin dir if .exe file is run
 	file, err := os.Create(testfile)
 	if err != nil {
 		fmt.Println("Error creating file")
