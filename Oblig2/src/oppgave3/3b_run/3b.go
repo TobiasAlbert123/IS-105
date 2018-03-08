@@ -26,6 +26,7 @@ func main() {
 	//addtofile.go reads file and prints
 	notmain.PrintResult()
 
+
 }
 
 //listens for SIGINT signal from sigintCh
