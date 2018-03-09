@@ -43,7 +43,7 @@ func funcA() {
 
 	//program stops if first number has an error
 	if err != nil {
-		fmt.Printf("first number is invalid, please type an integer\n")
+		fmt.Printf("First number is invalid, please type an integer\n")
 		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
@@ -54,7 +54,7 @@ func funcA() {
 
 	//program stops if second number has an error
 	if err != nil {
-		fmt.Printf("second number is invalid, please type an integer\n")
+		fmt.Printf("Second number is invalid, please type an integer\n")
 		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
