@@ -13,7 +13,7 @@ I denne oppgaven skulle vi lage et program som skal kunne hente inn en fil og re
 
 Vi tar et argument når programmet blir kjørt som blir satt lik filnavnet, i en funksjon `getFile()`. Deretter bruker to funksjoner `getFile()`. Først har vi `fileSize()`, som bruker `os.Stat().Size()` av filen, og printer ut antall byte som int. Deretter konverterer vi til float64 (for å få desimaltall) og deler antall bytes på 1024, 1024^2 og 1024^3 for å KB, MB og GB og printer. Deretter tar en ny funksjon, `fileInfo()`, `os.Lstat().Mode()` av filen, og finner diverse info om filen ved funksjoner som `IsDir()` og printer informasjonen.
 
-Koden er i [fileinfo.go](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/src/oppgave2/fileinfo.go) i src/Oppgave1.
+Koden er i [fileinfo.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig2/src/oppgave1/fileinfo.go) i src/Oppgave1.
 
 
 ##### Her er filen kjørt i cmd på text.txt:  
@@ -37,7 +37,7 @@ Her var oppgaven å finne antall linjer i en fil, samt finne de fem mest brukte 
 ##### Vi løste oppgaven slik:
 Vi tar et argument når programmet blir kjørt som blir satt lik filnavnet, i en funksjon `getFile()`. Deretter bruker to funksjoner `getFile()`. Den første funksjonen, `countLines()`, bruker `os.Open()` på filen og `bufio.NewScanner()` og teller hver gang den gjør en `Scan()` på filen, da finner man antall linjer i filen. Funksjon nummer 2, MapMaker(), blir også kjørt på filen og bruker `os.ReadFile()`. Filen blir dermed konvertert til en string, og så splittet opp i en string slice med `strings.Split()`. Hver posisjon i slicen tilsvarer én karakter / rune i filen. Deretter legger vi runer vi finner i filen inn et map, og legger til 1 til int-verdien for en rune hver gang vi ser den en gang til. Eksempel: vi finner 'a' i filen, 'a' i mapet : [a:1] blir til [a:2]. I xMostUsed går vi gjennom (med en for-loop) alle runene vi har funnet, og hver gang vi finner en som har blitt skrevet flere ganger enn `highestCount`, setter vi `highestCount` lik den verdien. Når vi er ferdig printer vi ut 'highestCount' og tilsvarende rune. Runen blir deretter slettet fra mapet, og den for-loopen x ganger (x er satt til 5 i `main()`).  
 
-Koden er i [filecount.go](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/src/oppgave2/filecount.go) i src/Oppgave2.  
+Koden er i [filecount.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig2/src/oppgave2/filecount.go) i src/Oppgave2.  
 
 
 Her er filen kjørt i cmd på text.txt:  
@@ -48,7 +48,7 @@ Filen kan eventuelt bli kjørt i cmd direkte fra [filecount.bat](https://github.
 
 #### b)
 
-[filecount.exe](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/bin/filecount.exe) filen ligger i [bin](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/bin)-mappen på git. Filstien for å finne text.txt er relativ, og programmet vil lete i [files]()-mappen på git etter filen du vil bruke. For å kjøre .exe filen skriver man kun 'filecount text.txt'.
+[filecount.exe](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/bin/filecount.exe) filen ligger i [bin](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/bin)-mappen på git. Filstien for å finne text.txt er relativ, og programmet vil lete i [files](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig2/src/files)-mappen på git etter filen du vil bruke. For å kjøre .exe filen skriver man kun 'filecount text.txt'.
 
 ----
 
@@ -60,7 +60,7 @@ Se [addup.go](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/o
 
 ![Bilde av oppgave 3a ikke funnet](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/images/oppgave3a.png "Oppgave 3a resultat i cmd")  
 
-Filen kan eventuelt bli kjørt i cmd direkte fra [addup.go.bat](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig2/src/oppgave3/addup.bat).
+Filen kan eventuelt bli kjørt i cmd direkte fra [addup.bat](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig2/src/oppgave3/addup.bat).
 
 #### b)
 
