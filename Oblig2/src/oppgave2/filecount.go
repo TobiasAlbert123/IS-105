@@ -55,8 +55,8 @@ var RuneMap = make(map[rune]int)
 
 
 //Creates map and feeds values from file into addToMap
-func MapMaker(text string) {
-	file, err := ioutil.ReadFile(text)
+func MapMaker(filePath string) {
+	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
 
 	}
