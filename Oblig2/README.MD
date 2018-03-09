@@ -84,8 +84,29 @@ Filen kan eventuelt bli kjørt i cmd direkte fra [3b.bat](https://github.com/Tob
 ##### Feilhåndtering i 3a):  
 Når input blir scannet fra terminalen, blir en error variabel initialisert. Hvis det er en error, (for eksempel bokstaver i input i stedet for tall) printes en feilmelding ut, og programmet avsluttes. Siden programmet prøver å scanne en variabel av type int vil det bare gå videre om input er av type int.  
 
+Eksempel:
+![3a errormelding](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/images/error3a.png "3a errormelding")
+
+Alle err i dette programmet har en delay på 2 sekunder (time.Sleep(2*time.Second)) for å forhindre at programmet avslutter for tidlig når et SIGINT-signal blir motatt, som gjør at kun errormelding blir printet men ikke SIGINT-meldingen.  
+
 ##### Feilhåndtering i 3b):
-Her blir en error initialisert 
+Her blir en error initialisert når:
+- Tall blir scannet fra terminal  
+  * gir error om typen ikke er int  
+- Filen blir laget  
+- Filen blir skrevet til  
+  * f.eks. om tall ikke er int eller ikke blir funnet  
+- Filen blir lest  
+  * gir error om filen ikke eksisterer eller om filnavn ikke er string  
+- String blir omgjort til int (sctrconv.Atoi) etter filen blir lest  
+  * hvis typen den konverterer ikke er et tall som string  
+
+Eksempel:
+![3a errormelding](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/images/error3a.png "3a errormelding")
+
+Alle err i dette programmet har en delay på 2 sekunder (time.Sleep(2*time.Second)) for å forhindre at programmet avslutter for tidlig når et SIGINT-signal blir motatt, som gjør at kun errormelding blir printet men ikke SIGINT-meldingen.
+
+
 
 
 #### d)
