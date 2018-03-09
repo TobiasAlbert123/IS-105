@@ -24,7 +24,8 @@ func Input() (int, int) {
 	fmt.Println("Enter first number")
 	_ , err := fmt.Scanf("%d", &number1)
 	if err != nil {
-		fmt.Println("Could not write first number")
+		fmt.Println("First number was invalid and could not be written")
+		fmt.Println("Please type an integer. Program will exit.")
 		time.Sleep(2*time.Second)
 		os.Exit(1)
 	}
@@ -36,7 +37,8 @@ func Input() (int, int) {
 		//repeating this line is needed for program to run in Windows cmd for some reason
 		_, err = fmt.Scanf("%d", &number2)
 		if err != nil {
-			fmt.Println("Could not write second number")
+			fmt.Println("Second number was invalid and could not be written")
+			fmt.Println("Please type an integer. Program will exit.")
 			time.Sleep(2*time.Second)
 		os.Exit(1)
 		}
@@ -90,5 +92,5 @@ func PrintResult() {
 	fmt.Printf("Total is %d\n", total)
 
 	//deletes file when done
-	//os.Remove(testfile)
+	os.Remove(testfile)
 }
