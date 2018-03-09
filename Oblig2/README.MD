@@ -6,12 +6,12 @@
 
 ### Oppgave 1  
 
-### a)
+#### a)
 
 I denne oppgaven skulle vi lage et program som skal kunne hente inn en fil og returnere filstørrelsen i bytes, KB, MB og GB. I tillegg til det skal programmet kunne sjekke en rekke fler detaljert informasjon om en fil, for eksempel om filen er et directory.
 ##### Vi løste oppgven slik:
 
-Vi tar et argument når programmet blir kjørt som blir satt lik filnavnet, i en funksjon getFile(). Deretter bruker to funksjoner getFile(). Først har vi fileSize(), som bruker os.Stat().Size() av filen, og printer ut antall byte som int. Deretter konverterer vi til float64 (for å få desimaltall) og deler antall bytes på 1024, 1024^2 og 1024^3 for å KB, MB og GB og printer. Deretter tar en ny funksjon, fileInfo(), os.Lstat().Mode() av filen, og finner diverse info om filen ved funksjoner som IsDir() og printer informasjonen.
+Vi tar et argument når programmet blir kjørt som blir satt lik filnavnet, i en funksjon `getFile()`. Deretter bruker to funksjoner `getFile()`. Først har vi `fileSize()`, som bruker `os.Stat().Size()` av filen, og printer ut antall byte som int. Deretter konverterer vi til float64 (for å få desimaltall) og deler antall bytes på 1024, 1024^2 og 1024^3 for å KB, MB og GB og printer. Deretter tar en ny funksjon, `fileInfo()`, `os.Lstat().Mode()` av filen, og finner diverse info om filen ved funksjoner som `IsDir()` og printer informasjonen.
 
 Koden er i [fileinfo.go](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/src/oppgave2/fileinfo.go) i src/Oppgave1.
 
@@ -35,7 +35,7 @@ Filen kan eventuelt bli kjørt i cmd direkte fra [fileinfo.bat](https://github.c
 Her var oppgaven å finne antall linjer i en fil, samt finne de fem mest brukte runes i en .txt fil. Utfordringen her var å få programmet til å kjøre uten at det tok veldig lang tid.
 
 ##### Vi løste oppgaven slik:
-Vi tar et argument når programmet blir kjørt som blir satt lik filnavnet, i en funksjon getFile(). Deretter bruker to funksjoner getFile(). Den første funksjonen, countLines(), bruker os.Open() på filen og bufio.NewScanner() og teller hver gang den gjør en Scan() på filen, da finner man antall linjer i filen. Funksjon nummer 2, MapMaker(), blir også kjørt på filen og bruker os.ReadFile(). Filen blir dermed konvertert til en string, og så splittet opp i en string slice med strings.Split. Hver posisjon i slicen tilsvarer én karakter / rune i filen. Deretter legger vi runer vi finner i filen inn et map, og legger til 1 til int-verdien for en rune hver gang vi ser den en gang til. Eksempel: vi finner 'a' i filen, 'a' i mapet : [a:1] blir til [a:2]. I xMostUsed går vi gjennom (med en for-loop) alle runene vi har funnet, og hver gang vi finner en som har blitt skrevet flere ganger enn 'highestCount', setter vi 'highestCount' lik den verdien. Når vi er ferdig printer vi ut 'highestCount' og tilsvarende rune. Runen blir deretter slettet fra mapet, og den for-loopen x ganger (x er satt til 5 i main()).  
+Vi tar et argument når programmet blir kjørt som blir satt lik filnavnet, i en funksjon `getFile()`. Deretter bruker to funksjoner `getFile()`. Den første funksjonen, `countLines()`, bruker `os.Open()` på filen og `bufio.NewScanner()` og teller hver gang den gjør en `Scan()` på filen, da finner man antall linjer i filen. Funksjon nummer 2, MapMaker(), blir også kjørt på filen og bruker `os.ReadFile()`. Filen blir dermed konvertert til en string, og så splittet opp i en string slice med `strings.Split()`. Hver posisjon i slicen tilsvarer én karakter / rune i filen. Deretter legger vi runer vi finner i filen inn et map, og legger til 1 til int-verdien for en rune hver gang vi ser den en gang til. Eksempel: vi finner 'a' i filen, 'a' i mapet : [a:1] blir til [a:2]. I xMostUsed går vi gjennom (med en for-loop) alle runene vi har funnet, og hver gang vi finner en som har blitt skrevet flere ganger enn `highestCount`, setter vi `highestCount` lik den verdien. Når vi er ferdig printer vi ut 'highestCount' og tilsvarende rune. Runen blir deretter slettet fra mapet, og den for-loopen x ganger (x er satt til 5 i `main()`).  
 
 Koden er i [filecount.go](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/src/oppgave2/filecount.go) i src/Oppgave2.  
 
@@ -84,10 +84,10 @@ Filen kan eventuelt bli kjørt i cmd direkte fra [3b.bat](https://github.com/Tob
 ##### Feilhåndtering i 3a):  
 Når input blir scannet fra terminalen, blir en error variabel initialisert. Hvis det er en error, (for eksempel bokstaver i input i stedet for tall) printes en feilmelding ut, og programmet avsluttes. Siden programmet prøver å scanne en variabel av type int vil det bare gå videre om input er av type int.  
 
-Eksempel:  
+##### Eksempel:  
 ![3a errormelding](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/images/error3a.png "3a errormelding")
 
-Alle err i dette programmet har en delay på 2 sekunder (time.Sleep(2*time.Second)) for å forhindre at programmet avslutter for tidlig når et SIGINT-signal blir motatt, som gjør at kun errormelding blir printet men ikke SIGINT-meldingen.  
+Alle err i dette programmet har en delay på 2 sekunder `(time.Sleep(2*time.Second)`) for å forhindre at programmet avslutter for tidlig når et SIGINT-signal blir motatt, som gjør at kun errormelding blir printet men ikke SIGINT-meldingen.  
 
 ##### Feilhåndtering i 3b):
 Her blir en error initialisert når:
@@ -101,17 +101,17 @@ Her blir en error initialisert når:
 - String blir omgjort til int (sctrconv.Atoi) etter filen blir lest  
   * hvis typen den konverterer ikke er et tall som string  
 
-Eksempel:  
+##### Eksempel:  
 ![3a errormelding](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig2/images/error3b.png "3a errormelding")
 
-Alle err i dette programmet har en delay på 2 sekunder (time.Sleep(2*time.Second)) for å forhindre at programmet avslutter for tidlig når et SIGINT-signal blir motatt, som gjør at kun errormelding blir printet men ikke SIGINT-meldingen.
+Alle err i dette programmet har en delay på 2 sekunder `(time.Sleep(2*time.Second)`) for å forhindre at programmet avslutter for tidlig når et SIGINT-signal blir motatt, som gjør at kun errormelding blir printet men ikke SIGINT-meldingen.
 
 
 
 
 #### d)
 
-SIGINT blir implementert ved å ha en go-funksjon som lytter etter et SIGINT-signal, og printer ut en avslutningsmelding og avslutter programmet når SIGINT-signalet blir sendt. Se main() og stop() i [addup.go](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/oppgave3/addup.go) og [3b.go](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/oppgave3/3b_run/3b.go).
+SIGINT blir implementert ved å ha en go-funksjon som lytter etter et SIGINT-signal, og printer ut en avslutningsmelding og avslutter programmet når SIGINT-signalet blir sendt. Se `main()` og `stop()` i [addup.go](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/oppgave3/addup.go) og [3b.go](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/oppgave3/3b_run/3b.go).
 
 Eksempler på SIGINT-signalet (CTRL+C) brukt i oppgave 3a og 3b:  
 
@@ -121,4 +121,4 @@ _ _
 
 #### e)
 
-Se [bin-mappen](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/bin). Disse filene ble laget ved å skrive 'go build <filnavn>' i cmd i riktig directory.
+Se [bin-mappen](https://github.com/TobiasAlbert123/IS-105/tree/master/Oblig2/src/bin). Disse filene ble laget ved å skrive '`go build <filnavn>`' i cmd i riktig directory.
