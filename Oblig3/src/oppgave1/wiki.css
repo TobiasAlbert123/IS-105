@@ -1,0 +1,12 @@
+body {
+	background: green;
+}
+
+.div, #div {
+	border: 10px solid blue;
+}
+
+#fonttest {
+	color: white;
+	font-size: 5em;
+}
