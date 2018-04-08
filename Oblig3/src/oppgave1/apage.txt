@@ -1,0 +1,16 @@
+<head>
+	<link rel="stylesheet" type="text/css" href="file:///C:/Users/Eier/Desktop/wiki.css">
+	<title>Heipaadegg</title>
+
+</head>
+<body>
+	<h2>Lol ok</h2>
+	<br>
+	<br>
+	<b>TEST MY ***</b>
+	<div class="div" id="div" style=" background:orange">
+		<br>
+		<p>LOL</p>
+		<br>
+	</div>
+</body>
