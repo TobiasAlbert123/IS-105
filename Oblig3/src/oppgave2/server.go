@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"log"
 	"html/template"
+	"fmt"
 )
 
 
@@ -38,7 +38,9 @@ func loadPage(title string) *Page {
 
 //a handler for a scenario
 func handler(writer http.ResponseWriter, request *http.Request) {
-	fmt.Fprintln(writer, "Hello, client")
+	fmt.Println(request.URL.Path[1:])
+	page := "page" + request.URL.Path[1:2]
+	http.ServeFile(writer, request, page)
 }
 
 func editHandler(writer http.ResponseWriter, request *http.Request) {
