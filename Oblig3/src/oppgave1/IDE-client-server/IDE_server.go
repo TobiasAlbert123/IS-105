@@ -1,4 +1,4 @@
-package main
+package IDE_client_server
 
 import (
 	"net"
