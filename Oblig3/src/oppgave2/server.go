@@ -3,27 +3,43 @@ package main
 import (
 	"io/ioutil"
 	"net/http"
-	//"log"
+	"log"
 	"html/template"
 	"fmt"
 	"os"
 	"encoding/json"
+	"strconv"
 )
 
 
 func main() {
-	jsontest()
-	/*http.HandleFunc("/", handler)
+	openJson()
+	for i := 0; i < len(users.Users); i++ {
+		jsonHandler(i)
+	}
+	fmt.Printf("\nMap contains %d entries, should be 60\n", len(jm))
+	http.HandleFunc("/", handler)
 	//http.HandleFunc("/view/", viewHandler)
-	http.HandleFunc("/s/", pageServer)
+	//http.HandleFunc("/s/", pageServer)
 	//http.HandleFunc("/edit/", editHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))*/
+	http.HandleFunc("/1", makeJsonSite)
+	http.HandleFunc("/a", attempt)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 //defines page
 type Page struct {
 	Title string
 	Body []byte
+}
+
+type jsonPerson struct {
+	First	string
+	Second	string
+	Third	string
+	Fourth	string
+	Fifth	string
+	Sixth	string
 }
 
 type Users struct {
@@ -51,12 +67,6 @@ type Company struct {
 	Catchphrase	string	`json:"catchPhrase"`
 }
 
-//Saves body to a file with name Title
-func (page *Page) save() error {
-	filename := page.Title + ".txt"
-	return ioutil.WriteFile(filename, page.Body, 0600)
-}
-
 //loads pages
 func loadPage(title string) *Page {
 	filename := title + ".txt"
@@ -64,20 +74,52 @@ func loadPage(title string) *Page {
 	return &Page{Title: title, Body: body}
 }
 
-//a handler for a scenario
-func handler(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println(request.URL.Path[1:])
-	page := "page" + request.URL.Path[1:2]
-	http.ServeFile(writer, request, page)
+func loadPerson(index int) *jsonPerson {
+	for i := 0; i < len(statNames); i++ {
+
+	}
+	first := statNames[1] + jm[statNames[1] + strconv.Itoa(index)]
+	second := statNames[2] + jm[statNames[2] + strconv.Itoa(index)]
+	third := statNames[3] + jm[statNames[3] + strconv.Itoa(index)]
+	fourth := statNames[4] + jm[statNames[4] + strconv.Itoa(index)]
+	fifth := statNames[5] + jm[statNames[5] + strconv.Itoa(index)]
+	sixth := statNames[6] + jm[statNames[6] + strconv.Itoa(index)]
+
+	return &jsonPerson{
+		First: first,
+		Second: second,
+		Third: third,
+		Fourth: fourth,
+		Fifth: fifth,
+		Sixth: sixth,
+	}
 }
 
-func jsontest() {
+func jsontemp(writer http.ResponseWriter, person *jsonPerson) {
+	temp, _ := template.ParseFiles("page-template.html")
+	temp.Execute(writer, person)
+}
+
+func attempt(writer http.ResponseWriter, request *http.Request) {
+		person := loadPerson(1)
+		fmt.Println(person.Second)
+		jsontemp(writer, person)
+}
+
+//a handler for a scenario
+func handler(writer http.ResponseWriter, request *http.Request) {
+	fmt.Fprintln(writer, "Hello, client.")
+}
+
+var users Users
+
+func openJson() {
 	jsonFile, err := os.Open("users.json")
 	if err != nil {
 		fmt.Printf("Error: v%", err)
 	}
 
-	fmt.Printf("Successfully opened json: %s", jsonFile)
+	fmt.Printf("Successfully opened json\n")
 
 
 	byteValue, err := ioutil.ReadAll(jsonFile)
@@ -86,17 +128,56 @@ func jsontest() {
 		fmt.Printf("Error: %v", err)
 	}
 
-	var users Users
 
 	json.Unmarshal(byteValue, &users)
+}
 
+var jm = make(map[string]string)
+
+var statNames []string
+
+func jsonHandler(index int) {
+
+
+	//defines the name of the map elements
+	element1 := "ID"
+	element2 := "Name"
+	element3 := "Username"
+	element4 := "Address"
+	element5 := "Company"
+	element6 := "Phone"
+
+	//prevents multiple values with same keys in map
+	stringI := strconv.Itoa(index)
+
+	//map elements created
+	jm[element1 + stringI] = strconv.Itoa(users.Users[index].Id)
+	jm[element2 + stringI] = users.Users[index].Name
+	jm[element3 + stringI] = users.Users[index].Username
+	jm[element4 + stringI] = users.Users[index].Address.Street + ", " + users.Users[index].Address.Suite
+	jm[element5 + stringI] = users.Users[index].Company.Name + " - " + users.Users[index].Company.Catchphrase
+	jm[element6 + stringI] = users.Users[index].Phone
+
+	//adds element names to a slice for easier printing
+	statNames = []string{element1, element2, element3, element4, element5, element6}
+
+	fmt.Println()
+
+
+	//prints a stat and the value (string) in console
+	/*
+	for i := 0; i < len(statNames); i++ {
+		fmt.Println(statNames[i], jm[statNames[i]  + stringI])
+	}*/
+
+}
+
+func makeJsonSite(writer http.ResponseWriter, request *http.Request) {
 	for i := 0; i < len(users.Users); i++ {
-		fmt.Printf("\nUser ID: %d\n", users.Users[i].Id)
-		fmt.Printf("User Name: %s\n", users.Users[i].Name)
-		fmt.Printf("User Username: %s\n", users.Users[i].Username)
-		fmt.Printf("Address: %s, %s\n", users.Users[i].Address.Street, users.Users[i].Address.Suite)
-		fmt.Printf("Company: %s - %s\n", users.Users[i].Company.Name, users.Users[i].Company.Catchphrase)
-		fmt.Printf("Phone: %s\n", users.Users[i].Phone)
+		fmt.Fprintln(writer)
+		for j := 0; j < len(statNames); j++ {
+			fmt.Fprintf(writer, "%s: %s\n", statNames[j], jm[statNames[j] + strconv.Itoa(i)])
+		}
 	}
 }
 
