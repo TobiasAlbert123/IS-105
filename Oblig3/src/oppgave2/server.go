@@ -9,8 +9,8 @@ import (
 	"os"
 	"encoding/json"
 	"strconv"
+	"time"
 )
-
 
 func main() {
 	openJson()
@@ -53,7 +53,6 @@ type User struct {
 	Address		Address	`json:"address"`
 	Company		Company	`json:"company"`
 	Phone		string	`json:"phone"`
-
 }
 
 type Address struct {
@@ -113,7 +112,7 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 
 var users Users
 
-func openJson() {
+func openJsonLocal() {
 	jsonFile, err := os.Open("users.json")
 	if err != nil {
 		fmt.Printf("Error: v%", err)
@@ -130,6 +129,38 @@ func openJson() {
 
 
 	json.Unmarshal(byteValue, &users)
+}
+
+func openJson() {
+	url := "http://api.open-notify.org/astros.json"
+	client := http.Client{
+		Timeout: time.Second *2,
+	}
+
+	request, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	request.Header.Set("User-Agent", "spacecount-tutorial")
+
+	res, getErr := client.Do(request)
+	if getErr != nil {
+		fmt.Println(err)
+	}
+
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		fmt.Println(err)
+	}
+
+	jsonErr := json.Unmarshal(body, &users)
+	if jsonErr != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(len(users.Users))
+
 }
 
 var jm = make(map[string]string)
