@@ -6,19 +6,22 @@ import (
 	"log"
 	"html/template"
 	"fmt"
-	"os"
 	"encoding/json"
 	"strconv"
 	"time"
+	"os"
 )
 
 func main() {
-	openJson()
+	go func() {
+		http.HandleFunc("/", openJson)
+	}()
+
 	for i := 0; i < len(users.Users); i++ {
 		jsonHandler(i)
 	}
 	fmt.Printf("\nMap contains %d entries, should be 60\n", len(jm))
-	http.HandleFunc("/", handler)
+	//http.HandleFunc("/", handler)
 	//http.HandleFunc("/view/", viewHandler)
 	//http.HandleFunc("/s/", pageServer)
 	//http.HandleFunc("/edit/", editHandler)
@@ -43,7 +46,7 @@ type jsonPerson struct {
 }
 
 type Users struct {
-	Users []User `json:"users"`
+	Users []User `json:" "`
 }
 
 type User struct {
@@ -115,7 +118,7 @@ var users Users
 func openJsonLocal() {
 	jsonFile, err := os.Open("users.json")
 	if err != nil {
-		fmt.Printf("Error: v%", err)
+		fmt.Printf("should not show Error: %v", err)
 	}
 
 	fmt.Printf("Successfully opened json\n")
@@ -131,8 +134,8 @@ func openJsonLocal() {
 	json.Unmarshal(byteValue, &users)
 }
 
-func openJson() {
-	url := "http://api.open-notify.org/astros.json"
+func openJson(writer http.ResponseWriter, request *http.Request) {
+	url := "https://jsonplaceholder.typicode.com/users"
 	client := http.Client{
 		Timeout: time.Second *2,
 	}
@@ -142,6 +145,9 @@ func openJson() {
 		fmt.Println(err)
 	}
 
+	fmt.Println("json url success")
+
+
 	request.Header.Set("User-Agent", "spacecount-tutorial")
 
 	res, getErr := client.Do(request)
@@ -149,15 +155,22 @@ func openJson() {
 		fmt.Println(err)
 	}
 
+	fmt.Println("json get success")
+
 	body, readErr := ioutil.ReadAll(res.Body)
 	if readErr != nil {
 		fmt.Println(err)
 	}
 
+	fmt.Println("json read success")
+
 	jsonErr := json.Unmarshal(body, &users)
 	if jsonErr != nil {
 		fmt.Println(err)
 	}
+
+
+	fmt.Println("json unmarshall success")
 
 	fmt.Println(len(users.Users))
 
