@@ -76,6 +76,7 @@ func loadPage(title string) *Page {
 	return &Page{Title: title, Body: body}
 }
 
+/*
 func loadPerson(index int) *jsonPerson {
 	for i := 0; i < len(statNames); i++ {
 
@@ -96,7 +97,7 @@ func loadPerson(index int) *jsonPerson {
 		Sixth: sixth,
 	}
 }
-
+*/
 func jsontemp(writer http.ResponseWriter, person *jsonPerson) {
 	temp, _ := template.ParseFiles("page-template.html")
 	temp.Execute(writer, person)
@@ -133,7 +134,7 @@ func openJsonLocal() {
 
 	json.Unmarshal(byteValue, &users)
 }
-
+/*
 func openJson(writer http.ResponseWriter, request *http.Request) {
 	url := "https://jsonplaceholder.typicode.com/users"
 	client := http.Client{
@@ -175,7 +176,7 @@ func openJson(writer http.ResponseWriter, request *http.Request) {
 	fmt.Println(len(users.Users))
 
 }
-
+*/
 var jm = make(map[string]string)
 
 var statNames []string

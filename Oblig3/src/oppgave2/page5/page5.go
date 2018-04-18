@@ -1,4 +1,4 @@
-package main
+package page5
 
 import (
 	"net/http"
@@ -13,7 +13,6 @@ func main() {
 	openJson()
 	http.HandleFunc("/5", printToServer)
 	http.ListenAndServe(":8080", nil)
-
 }
 
 type Datasets struct {
@@ -78,7 +77,7 @@ func openJson() {
 
 func printAll(index int) {
 	d:= datasets.Datasets[index]
-	fmt.Printf("ID: %s\n", d.Id)
+	fmt.Printf("\nID: %s\n", d.Id)
 	fmt.Printf("Tittel: %s\n", d.Title)
 	fmt.Printf("Antall: %s\n", d.Antall)
 	if len(d.Description) > 0 {
@@ -93,7 +92,7 @@ func printAll(index int) {
 func printToServer(writer http.ResponseWriter, request *http.Request) {
 	for i := 0; i < len(datasets.Datasets); i++ {
 		d := datasets.Datasets[i]
-		fmt.Fprintf(writer,"ID: %s\n", d.Id)
+		fmt.Fprintf(writer,"\nID: %s\n", d.Id)
 		fmt.Fprintf(writer,"Tittel: %s\n", d.Title)
 		fmt.Fprintf(writer,"Antall: %s\n", d.Antall)
 		if len(d.Description) > 0 {
