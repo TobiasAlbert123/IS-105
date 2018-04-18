@@ -1,24 +1,12 @@
-package tes
-
-import (
-	"fmt"
-)
-
-func Bbb() {
-	fmt.Println()
-}
+package page1
 
 type People struct {
 	People	[]Person	`json:"people"`
 }
-
 
 type Person struct {
 	Name	string	`json:"name"`
 	Craft	string	`json:"craft"`
 }
 
-var Tes People
-
-
-var Uuu = "http://api.open-notify.org/astros.json"
+var Url = "http://api.open-notify.org/astros.json"
