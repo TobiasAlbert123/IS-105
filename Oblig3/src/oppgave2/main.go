@@ -5,22 +5,27 @@ import (
 	"time"
 	"fmt"
 	"io/ioutil"
-	"./page1"
-	"./page5"
 	"encoding/json"
 	"html/template"
-	"IS-105/Oblig3/src/oppgave2/page2"
-	"IS-105/Oblig3/src/oppgave2/page3"
-	"IS-105/Oblig3/src/oppgave2/page4"
+	"./page1"
+	"./page2"
+	"./page3"
+	"./page4"
+	"./page5"
 )
 
 func main() {
+	http.HandleFunc("/", helloClient)
 	http.HandleFunc("/1", Page1)
 	http.HandleFunc("/2", Page2)
 	http.HandleFunc("/3", Page3)
 	http.HandleFunc("/4", Page4)
 	http.HandleFunc("/5", Page5)
 	http.ListenAndServe(":8080", nil)
+}
+
+func helloClient(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Hello, client.")
 }
 
 type Template struct {
@@ -43,7 +48,7 @@ type Template struct {
 
 var p1 page1.People
 
-var p2 page2.Title
+var p2 page2.Entries
 
 var p3 page3.Entries
 
@@ -76,104 +81,43 @@ func getJson(url string) []byte {
 	return body
 }
 
-func loadTemplate(title string, names, values []string) *Template {
+
+func loadTemplate(index int, title string, names, values []string) *Template {
 	for i := 0; i < len(names); i++ {
 		names[i] += ": "
 		if len(values[i]) == 0 {
 			values[i] += "-missing-"
 		}
 	}
-	switch len(names) {
-	case 2:
-		return &Template{
-			Title:  title,
-			Name0:  names[0],
-			Value0: values[0],
-			Name1:  names[1],
-			Value1: values[1],
+
+	t := Template{}
+	t.Title = title
+	for i := 0; i < index; i++ {
+		switch i {
+		case 0:
+			t.Name0 = names[i]
+			t.Value0 = values[i]
+		case 1:
+			t.Name1 = names[i]
+			t.Value1 = values[i]
+		case 2:
+			t.Name2 = names[i]
+			t.Value2 = values[i]
+		case 3:
+			t.Name3 = names[i]
+			t.Value3 = values[i]
+		case 4:
+			t.Name4 = names[i]
+			t.Value4 = values[i]
+		case 5:
+			t.Name5 = names[i]
+			t.Value5 = values[i]
+		case 6:
+			t.Name6 = names[i]
+			t.Value6 = values[i]
 		}
-		break
-	case 3:
-		return &Template{
-			Title:  title,
-			Name0:  names[0],
-			Value0: values[0],
-			Name1:  names[1],
-			Value1: values[1],
-			Name2:  names[2],
-			Value2: values[2],
-		}
-		break
-	case 4:
-		return &Template{
-			Title:  title,
-			Name0:  names[0],
-			Value0: values[0],
-			Name1:  names[1],
-			Value1: values[1],
-			Name2:  names[2],
-			Value2: values[2],
-			Name3: names[3],
-			Value3: values[3],
-		}
-		break
-	case 5:
-		return &Template{
-			Title:  title,
-			Name0:  names[0],
-			Value0: values[0],
-			Name1:  names[1],
-			Value1: values[1],
-			Name2:  names[2],
-			Value2: values[2],
-			Name3: names[3],
-			Value3: values[3],
-			Name4: names[4],
-			Value4: values[4],
-		}
-		break
-	case 6:
-		return &Template{
-			Title:  title,
-			Name0:  names[0],
-			Value0: values[0],
-			Name1:  names[1],
-			Value1: values[1],
-			Name2:  names[2],
-			Value2: values[2],
-			Name3: names[3],
-			Value3: values[3],
-			Name4: names[4],
-			Value4: values[4],
-			Name5: names[5],
-			Value5: values[5],
-		}
-		break
-	case 7:
-		return &Template{
-			Title:  title,
-			Name0:  names[0],
-			Value0: values[0],
-			Name1:  names[1],
-			Value1: values[1],
-			Name2:  names[2],
-			Value2: values[2],
-			Name3: names[3],
-			Value3: values[3],
-			Name4: names[4],
-			Value4: values[4],
-			Name5: names[5],
-			Value5: values[5],
-			Name6: names[6],
-			Value6: values[6],
-		}
-		break
 	}
-	return &Template{
-		Title:title,
-		Name0: names[0],
-		Value0: values[0],
-	}
+	return &t
 }
 
 func useTemplate(writer http.ResponseWriter, page *Template) {
@@ -197,8 +141,9 @@ func Page1(w http.ResponseWriter, r *http.Request) {
 	writeTitle(w, page1.Url)
 	for i := 0; i < len(page.People); i++ {
 		names := []string{"Name", "Craft"}
-		values := []string{page.People[i].Name, page.People[i].Craft}
-		useTemplate(w, loadTemplate(title, names, values))
+		v := page.People[i]
+		values := []string{v.Name, v.Craft}
+		useTemplate(w, loadTemplate(len(names), title, names, values))
 	}
 }
 
@@ -210,10 +155,11 @@ func Page2(w http.ResponseWriter, r *http.Request) {
 	}
 	title := "a set"
 	writeTitle(w, page2.Url)
-	for i := 0; i < 1; i++ {
-		names := []string{"Label", ""}
-		values := []string{page.Dataset.Dimension.Region.Label, ""}
-		useTemplate(w, loadTemplate(title, names, values))
+	for i := 0; i < len(page.Entries); i++ {
+		names := []string{"Kommune", "Fylke", "Navn"}
+		v:= page.Entries[i]
+		values := []string{v.Kommune, v.Fylke, v.Navn}
+		useTemplate(w, loadTemplate(len(names), title, names, values))
 	}
 }
 
@@ -229,7 +175,7 @@ func Page3(w http.ResponseWriter, r *http.Request) {
 		names := []string{"Kost", "Land", "Makssatser natt", "Verdensdel"}
 		v := page.Entries[i]
 		values := []string{v.Kost, v.Land, v.Makssatser_natt, v.Verdensdel}
-		useTemplate(w, loadTemplate(title, names, values))
+		useTemplate(w, loadTemplate(len(names), title, names, values))
 	}
 }
 
@@ -245,7 +191,7 @@ func Page4(w http.ResponseWriter, r *http.Request) {
 		names := []string{"Navn", "Organisasjonsform", "Stiftelsesdato", "Regdato", "Tlf", "Forretningsadresse", "Poststed"}
 		v := page.Entries[i]
 		values := []string{v.Navn, v.Organisasjonsform, v.Stiftelsesdato, v.Regdato, v.Tlf, v.Forretningsadresse, v.Poststed}
-		useTemplate(w, loadTemplate(title, names, values))
+		useTemplate(w, loadTemplate(len(names), title, names, values))
 	}
 }
 
@@ -261,6 +207,6 @@ func Page5(w http.ResponseWriter, r *http.Request) {
 		names := []string{"ID", "Title", "Antall", "Beskrivelse"}
 		v := page.Datasets[i]
 		values := []string{v.Id, v.Title, v.Antall, v.Description[0].Value}
-		useTemplate(w, loadTemplate(title, names, values))
+		useTemplate(w, loadTemplate(len(names), title, names, values))
 	}
 }
