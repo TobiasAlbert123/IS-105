@@ -1,26 +1,14 @@
 package page2
 
-type Title struct {
-	Dataset	Dataset	`json:"dataset"`
+type Entries struct {
+	Entries	[]Entry	`json:"entries"`
 }
 
-type Dataset struct {
-	Dimension	Dimension	`json:"dimension"`
-}
-
-type Dimension struct {
-	Region	Region	`json:"Region"`
-}
-
-type Region struct {
-	Label	string	`json:"label"`
-	Category	Category	`json:"category"`
-}
-
-type Category struct {
-
+type Entry struct {
+	Kommune	string	`json:"kommune"`
+	Fylke	string	`json:"fylke"`
+	Navn	string	`json:"navn"`
 }
 
 
-
-var Url = "https://data.ssb.no/api/v0/dataset/1104.json?lang=no"
+var Url = "https://hotell.difi.no/api/json/difi/geo/kommune"
