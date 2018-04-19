@@ -12,14 +12,14 @@ type Dataset struct {
 	Distribution []Distribution	`json:"distribution"`
 }
 
-type Distribution struct {
-	Id		string	`json:"id"`
-	Title	string	`json:"title"`
-}
-
 type Description struct {
 	Language	string	`json:"language"`
 	Value	string	`json:"value"`
+}
+
+type Distribution struct {
+	Id		string	`json:"id"`
+	Title	string	`json:"title"`
 }
 
 var Url = "https://data.norge.no/api/dcat/data.json?page=1"
