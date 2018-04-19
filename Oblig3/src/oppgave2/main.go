@@ -24,10 +24,13 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
+//for oppgave1
 func helloClient(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, client.")
 }
 
+
+//defines the Template type, to be used in the html template
 type Template struct {
 	Title	string
 	Name0	string
@@ -46,43 +49,30 @@ type Template struct {
 	Value6	string
 }
 
-var p1 page1.People
-
-var p2 page2.Entries
-
-var p3 page3.Entries
-
-var p4 page4.Entries
-
-var p5 page5.Datasets
-
-
 //opens and returns the json data at url
 func getJson(url string) []byte {
 	client := http.Client{
 		Timeout: time.Second *2,
 	}
-
-	request, err := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	response, err := client.Do(request)
+	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	return body
 }
 
-
-func loadTemplate(index int, title string, names, values []string) *Template {
+//adds values to the Template type to make it ready for the html template
+func loadTemplate(title string, names, values []string) *Template {
+	//adds spacing between name and value for template
+	//as well as filling in for missing or empty data
 	for i := 0; i < len(names); i++ {
 		names[i] += ": "
 		if len(values[i]) == 0 {
@@ -90,9 +80,10 @@ func loadTemplate(index int, title string, names, values []string) *Template {
 		}
 	}
 
-	t := Template{}
-	t.Title = title
-	for i := 0; i < index; i++ {
+	//initialises an empty Template type, needs to happen within function or it will not clear properly
+	t := Template{Title:title}
+	//adds names and values to the Template type based on the names slice length
+	for i := 0; i < len(names); i++ {
 		switch i {
 		case 0:
 			t.Name0 = names[i]
@@ -120,51 +111,61 @@ func loadTemplate(index int, title string, names, values []string) *Template {
 	return &t
 }
 
-func useTemplate(writer http.ResponseWriter, page *Template) {
-	template, _ := template.ParseFiles("page-template.html")
-	template.Execute(writer, page)
-}
-
+//writes a header for the html page
+//a separate template could be used, but probably too much effort for 3 lines
 func writeTitle(w http.ResponseWriter, url string) {
 	fmt.Fprintln(w, "<h1 style=\"font-size:3em\">Datasets from: </h1>")
-	fmt.Fprintf(w, "<a style=\"font-size:2em\" href=\"" + url + "\" target=\"_blank\">"+ url + "</a>")
+	fmt.Fprintf(w, "<a style=\"font-size:2em\" href=\"%s\" target=\"_blank\">%s</a>\n",url, url)
 	fmt.Fprint(w, "<br><br>")
 }
 
+//renders the template as a html page
+func useTemplate(w http.ResponseWriter, page *Template) {
+	template, _ := template.ParseFiles("page-template.html")
+	template.Execute(w, page)
+}
+
+//all Page'x' functions are the same, but there must be some code duplication as
+//they use a lot of different types which does not transfer well between functions
+//PS: comments for pages are not duplicated
 func Page1(w http.ResponseWriter, r *http.Request) {
-	page  := p1
+	//initialises the page
+	page  := page1.People{}
+	//puts json data into the readable format defined in page
 	jsonErr := json.Unmarshal(getJson(page1.Url), &page)
 	if jsonErr != nil {
 		fmt.Println(jsonErr)
 	}
 	title := "a person"
+	//writes header to the html page
 	writeTitle(w, page1.Url)
+	//uses template on each object in the json data
 	for i := 0; i < len(page.People); i++ {
 		names := []string{"Name", "Craft"}
 		v := page.People[i]
 		values := []string{v.Name, v.Craft}
-		useTemplate(w, loadTemplate(len(names), title, names, values))
+		useTemplate(w, loadTemplate(title, names, values))
 	}
 }
 
 func Page2(w http.ResponseWriter, r *http.Request) {
-	page  := p2
+	page  := page2.Entries{}
 	jsonErr := json.Unmarshal(getJson(page2.Url), &page)
 	if jsonErr != nil {
 		fmt.Println(jsonErr)
 	}
-	title := "a set"
+	title := "a county"
 	writeTitle(w, page2.Url)
 	for i := 0; i < len(page.Entries); i++ {
 		names := []string{"Kommune", "Fylke", "Navn"}
 		v:= page.Entries[i]
 		values := []string{v.Kommune, v.Fylke, v.Navn}
-		useTemplate(w, loadTemplate(len(names), title, names, values))
+		useTemplate(w, loadTemplate(title, names, values))
 	}
 }
 
 func Page3(w http.ResponseWriter, r *http.Request) {
-	page  := p3
+	page  := page3.Entries{}
 	jsonErr := json.Unmarshal(getJson(page3.Url), &page)
 	if jsonErr != nil {
 		fmt.Println(jsonErr)
@@ -175,12 +176,12 @@ func Page3(w http.ResponseWriter, r *http.Request) {
 		names := []string{"Kost", "Land", "Makssatser natt", "Verdensdel"}
 		v := page.Entries[i]
 		values := []string{v.Kost, v.Land, v.Makssatser_natt, v.Verdensdel}
-		useTemplate(w, loadTemplate(len(names), title, names, values))
+		useTemplate(w, loadTemplate(title, names, values))
 	}
 }
 
 func Page4(w http.ResponseWriter, r *http.Request) {
-	page  := p4
+	page  := page4.Entries{}
 	jsonErr := json.Unmarshal(getJson(page4.Url), &page)
 	if jsonErr != nil {
 		fmt.Println(jsonErr)
@@ -191,12 +192,12 @@ func Page4(w http.ResponseWriter, r *http.Request) {
 		names := []string{"Navn", "Organisasjonsform", "Stiftelsesdato", "Regdato", "Tlf", "Forretningsadresse", "Poststed"}
 		v := page.Entries[i]
 		values := []string{v.Navn, v.Organisasjonsform, v.Stiftelsesdato, v.Regdato, v.Tlf, v.Forretningsadresse, v.Poststed}
-		useTemplate(w, loadTemplate(len(names), title, names, values))
+		useTemplate(w, loadTemplate(title, names, values))
 	}
 }
 
 func Page5(w http.ResponseWriter, r *http.Request) {
-	page := p5
+	page := page5.Datasets{}
 	jsonErr := json.Unmarshal(getJson(page5.Url), &page)
 	if jsonErr != nil {
 		fmt.Println(jsonErr)
@@ -207,6 +208,6 @@ func Page5(w http.ResponseWriter, r *http.Request) {
 		names := []string{"ID", "Title", "Antall", "Beskrivelse"}
 		v := page.Datasets[i]
 		values := []string{v.Id, v.Title, v.Antall, v.Description[0].Value}
-		useTemplate(w, loadTemplate(len(names), title, names, values))
+		useTemplate(w, loadTemplate(title, names, values))
 	}
 }
