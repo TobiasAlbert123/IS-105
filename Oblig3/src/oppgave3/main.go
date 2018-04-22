@@ -75,12 +75,13 @@ func connTCP(quote string) {
 	connection, err := listen.Accept()
 	handleError(err)
 
-	for {
-		message, _ := bufio.NewReader(connection).ReadString('\n')
-		//fmt.Print("Message received: ", string(message))
-		message = "TCP quote: "
-		connection.Write([]byte(message + quote + "\n\n"))
-	}
+	message, _ := bufio.NewReader(connection).ReadString('\n')
+	//fmt.Print("Message received: ", string(message))
+	message = "TCP quote: "
+	exitMsg := " =====NOTE: Connection closed. Please restart client to try again.====="
+	connection.Write([]byte(message + quote + exitMsg + "\n\n"))
+	connection.Close()
+
 }
 
 //opens and unmarshals local file with quotes

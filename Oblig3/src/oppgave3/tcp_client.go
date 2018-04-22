@@ -3,7 +3,9 @@ package main
 import "net"
 import "fmt"
 import "bufio"
-import "os"
+import (
+	"os"
+)
 
 func main() {
 
