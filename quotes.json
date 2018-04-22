@@ -1,0 +1,43 @@
+{
+    "success": {
+        "total": 1
+    },
+    "contents": {
+        "quotes": [
+            {
+                "quote": "Responsibility for learning belongs to the student, regardless of age",
+                "length": "69",
+                "author": "Robert Martin",
+                "tags": [
+                    "students"
+                ],
+                "category": "students",
+                "date": "2018-04-20",
+                "permalink": "https://theysaidso.com/quote/G2vxijVVymthlPHjE__UXweF/robert-martin-responsibility-for-learning-belongs-to-the-student-regardless-of-a",
+                "title": "Quote of the day for students",
+                "background": "https://theysaidso.com/img/student.jpg",
+                "id": "G2vxijVVymthlPHjE__UXweF"
+            },
+            {
+                "quote": "If you watch a game, it's fun. If you play it, it's recreation. If you work at it, it's golf.",
+                "length": "93",
+                "author": "Bob Hope",
+                "tags": [
+                    "fun",
+                    "game",
+                    "games",
+                    "golf",
+                    "sports",
+                    "work"
+                ],
+                "category": "sports",
+                "date": "2018-04-20",
+                "permalink": "https://theysaidso.com/quote/iarnNCMtoIhyhdnOU5scggeF/bob-hope-if-you-watch-a-game-its-fun-if-you-play-it-its-recreation-if-you-work-a",
+                "title": "Sports Quote of the day",
+                "background": "https://theysaidso.com/img/bgs/swim.jpg",
+                "id": "iarnNCMtoIhyhdnOU5scggeF"
+            }
+        ],
+        "copyright": "2017-19 theysaidso.com"
+    }
+}
