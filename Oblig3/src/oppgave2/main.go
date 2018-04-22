@@ -7,11 +7,11 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"html/template"
-	"./page1"
-	"./page2"
-	"./page3"
-	"./page4"
-	"./page5"
+	"./pages/page1"
+	"./pages/page2"
+	"./pages/page3"
+	"./pages/page4"
+	"./pages/page5"
 )
 
 func main() {
@@ -82,30 +82,29 @@ func loadTemplate(title string, names, values []string) *Template {
 
 	//initialises an empty Template type, needs to happen within function or it will not clear properly
 	t := Template{Title:title}
+	t.Name0 = names[0]
+	t.Value0 = values[0]
 	//adds names and values to the Template type based on the names slice length
 	for i := 0; i < len(names); i++ {
 		switch i {
-		case 0:
-			t.Name0 = names[i]
-			t.Value0 = values[i]
-		case 1:
-			t.Name1 = names[i]
-			t.Value1 = values[i]
-		case 2:
-			t.Name2 = names[i]
-			t.Value2 = values[i]
-		case 3:
-			t.Name3 = names[i]
-			t.Value3 = values[i]
-		case 4:
-			t.Name4 = names[i]
-			t.Value4 = values[i]
-		case 5:
-			t.Name5 = names[i]
-			t.Value5 = values[i]
-		case 6:
-			t.Name6 = names[i]
-			t.Value6 = values[i]
+			case 1:
+				t.Name1 = names[i]
+				t.Value1 = values[i]
+			case 2:
+				t.Name2 = names[i]
+				t.Value2 = values[i]
+			case 3:
+				t.Name3 = names[i]
+				t.Value3 = values[i]
+			case 4:
+				t.Name4 = names[i]
+				t.Value4 = values[i]
+			case 5:
+				t.Name5 = names[i]
+				t.Value5 = values[i]
+			case 6:
+				t.Name6 = names[i]
+				t.Value6 = values[i]
 		}
 	}
 	return &t
