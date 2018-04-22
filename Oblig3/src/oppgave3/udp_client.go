@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	conn, err := net.Dial("udp", "localhost:8081")
+	conn, err := net.Dial("udp", "localhost:17")
 	if err != nil {
 		fmt.Printf("Some error %v", err)
 		return
