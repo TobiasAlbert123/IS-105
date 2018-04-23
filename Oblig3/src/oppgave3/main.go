@@ -13,14 +13,13 @@ import (
 func main() {
 	fmt.Printf("Program starting...\n\n")
 	//creates UDP and TCP connections independently as 'go' functions
-	go connUDP(udpQuote())
 	go connTCP(tcpQuote())
+	go connUDP(udpQuote())
 
 	//prevents program from instantly exiting
 	time.Sleep(time.Minute * 10)
 	fmt.Println("Program finished. Exiting...")
 }
-
 
 //type structs for getting quotes from a json file
 type Contents struct {
@@ -76,7 +75,8 @@ func connTCP(quote string) {
 	handleError(err)
 
 	message, _ := bufio.NewReader(connection).ReadString('\n')
-	//fmt.Print("Message received: ", string(message))
+
+	//message data thrown away
 	message = "TCP quote: "
 	exitMsg := " =====NOTE: Connection closed. Please restart client to try again.====="
 	connection.Write([]byte(message + quote + exitMsg + "\n\n"))
