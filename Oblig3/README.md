@@ -1,17 +1,31 @@
-# Oppgave 1
-### a) Sett opp en webserver som lytter til port 8080.
-### b) Når klienter aksesserer webserveren på path lik "/" skal klienten få tilbake strengen "Hello, client". Strengen skal vises i nettleseren.
+# Obligatorisk oppgave 3 Midgets
 
+##### _Tobias Albert_, _Espen Thorsen Frank_, _Benjamin Vraspilai_, _Fredrik Svartvatn_
 
-# Oppgave 2 API kall og behandling av JSON og HTML templates
-### a) Presenter data på webserveren slik at den er leselig for mennesker(Ren tekst, f.eks. "Sted: Jorenhholem, dato: 13.04.2018", ikke i curly brackets.) når klienter aksesserer stiene /1, /2, /3, /4, /5.
+----------------------------------------------------------------------------------
 
+### Oppgave 1  
 
-### Dataen som skal presenteres skal hentes fra fem ulike APIer, hvor alle returnerer data i JSON format. Dere velger selv hvilke datasett dere benytter. Det er denne dataen som skal presenteres på de ulike stiene på webserveren. Et eksempel på et API som returnerer JSON data; https://hotell.difi.no/api/json/stavanger/miljostasjoner
+##### I den første oppgaven skulle vi opprette en lokal webserver. Vi fulgte en ganske bra tutorial for å hjelpe oss med å fullføre oppgaven. Den gikk igjennom step by step hvordan man kunne sette opp en webserver som lytter på 8080, og senere skrive inn "Hello Client!".
+https://golang.org/doc/articles/wiki/
+#### Vi løste oppgven med følgende kode: 
 
+----------------------------------------------------------------------------------
 
-### b) Samtlige stier i oppgave 2 skal rendres til klienter ved bruk av Go templates.
+### Oppgave 2
 
+##### I denne oppgaven skulle vi bruke 5 ulike json APIer. Det å finne 5 forstålige API var litt vanskelig men etter veldig mye leting på https://www.ssb.no/ fant vi noen vi kunne bruke
+##### Disse 5 ble brukt
+page1: http://api.open-notify.org/astros.json  
+page2: https://hotell.difi.no/api/json/difi/geo/kommune  
+page3: https://hotell.difi.no/api/json/fad/reise/utland?  
+page4: https://hotell.difi.no/api/json/brreg/enhetsregisteret?page=8
+page5: https://data.norge.no/api/dcat/data.json?page=1
+#### Vi løste oppgaven med følgende kode:
 
-# Oppgave 3 UDP/TCP server og Internett standarder
-### Implementer et serverprogram i henhold til RFC 865. Serveren skal svare både på UDP og TCP.
+------------------------------------------------------------------------------------
+
+### Oppgave 3
+
+##### I oppgave 3 
+
