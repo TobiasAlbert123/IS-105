@@ -58,10 +58,8 @@ func connUDP(quote string) {
 	for {
 		_ , address, err := serverConnection.ReadFromUDP(buffer)
 		handleError(err)
-		//fmt.Println("Received: ", string(buffer[0:length]), " from ", address)
 
 		message := "UDP quote: "
-
 		serverConnection.WriteToUDP([]byte(message + quote + "\n\n"), address)
 	}
 }
