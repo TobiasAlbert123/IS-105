@@ -47,7 +47,7 @@
 ![page4](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig3/images/2/page4.png?raw=true)  
 
 #### page5: https://data.norge.no/api/dcat/data.json?page=1  
-##### I page 5 ser
+##### I page 5 ser vi html-kode i 'Beskrivelse', som blir vist i klartekst (i stedet for å bli lest som HTML av browseren) fordi datasettet ikke inneholder tegnene '<' og '>' i klartekst, men en ASCII-representasjon av tegnene i stedet (`\u003C` og `\u003E`).
 ![page5](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig3/images/2/page5.png?raw=true)  
 
 
