@@ -66,7 +66,9 @@
 ##### TCP connection:  
 ![UDP](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig3/images/3/tcp_done.png?raw=true)  
 
-##### Merk at TCP-forbindelsen blir avbrutt etter at sitatet er sendt, slik det er beskrevet i [RFC 865], mens UDP-forbindelsen fortsatt er åpen.
+##### Merk at TCP-forbindelsen blir avbrutt etter at sitatet er sendt, slik det er beskrevet i [RFC 865], mens UDP-forbindelsen fortsatt er åpen.  
+
+##### Kode: [/oppgave3/main.go](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig3/src/oppgave3/main.go)
 
 
 ##### UDP- og TCP-clienter er vedlagt i [/oppgave3](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig3/src/oppgave3).
