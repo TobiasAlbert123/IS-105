@@ -113,9 +113,9 @@ func loadTemplate(title string, names, values []string) *Template {
 //writes a header for the html page
 //a separate template could be used, but probably too much effort for 3 lines
 func writeTitle(w http.ResponseWriter, url string) {
-	fmt.Fprintln(w, "<h1 style=\"font-size:3em\">Datasets from: </h1>")
-	fmt.Fprintf(w, "<a style=\"font-size:2em\" href=\"%s\" target=\"_blank\">%s</a>\n",url, url)
-	fmt.Fprint(w, "<br><br>")
+	fmt.Fprintln(w, "<h1 style=\"font-size:3em; text-align:center;\">Datasets from: </h1>")
+	fmt.Fprintf(w, "<p style=\"font-size:2em; text-align:center;\"><a href=\"%s\" target=\"_blank\">%s</a></p>\n",url, url)
+	fmt.Fprint(w, "<br>")
 }
 
 //renders the template as a html page
