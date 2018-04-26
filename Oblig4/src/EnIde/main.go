@@ -6,7 +6,18 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"strconv"
 )
+
+type Items struct {
+	Items	[]Item
+}
+
+type Item struct {
+	Name	string
+	Price	int
+}
+
 
 func main() {
 	url1 := "https://www.komplett.no/product/950622/datautstyr/pc-komponenter/prosessorer/intel-core-i9-7980xe-prosessor"
@@ -15,18 +26,55 @@ func main() {
 		url1,
 		url2,
 		"https://www.komplett.no/product/903116/datautstyr/lagring/harddiskerssd/ssd-m2/samsung-960-evo-500gb-m2-pcie-ssd",
+		"https://www.komplett.no/product/985604/datautstyr/pc-komponenter/skjermkort/nvidia-titan-v",
 	}
+	names := []string{}
+	prices := []int{}
 	for i := 0; i < len(urls); i++ {
 		root := getPage(urls[i])
+		names = append(names, formatName(get2Thing("visible: addToCart.buttonClicked", root)))
 		fmt.Printf("Navn: %s\n", formatName(get2Thing("visible: addToCart.buttonClicked", root)))
-		fmt.Printf("Pris: %s%s\n\n", getThing("price", root), getThing("priceCurrency", root))
+		prices = append(prices, formatPrice(getThing("price", root)))
+		fmt.Printf("Pris: %d %s\n\n", formatPrice(getThing("price", root)), getThing("priceCurrency", root))
 	}
+	fmt.Println("AGAIN")
+	for i := 0; i < len(names); i++ {
+		fmt.Printf("Navn: %s, Pris: %d\n\n", names[i], prices[i])
+	}
+
+	//does not work
+	listed := sortByHighestPrice(prices)
+	for i := 0; i < len(listed); i++ {
+		fmt.Printf("Number %d price: %d\n", i, listed[i])
+	}
+}
+
+//does not work
+func sortByHighestPrice(input []int) []int{
+	temp := input
+	highest := 0
+	listed := []int{}
+	for i := 0; i < len(input); i++ {
+		for j := 0; j < len(temp); j++ {
+			if temp[j] > highest {
+				highest = temp[j]
+			}
+		}
+		listed = append(listed, highest)
+		temp = append(temp, highest)
+	}
+	return listed
 }
 
 func formatName(input string) string {
 	toRemove := "Lagt til "
-	input = strings.Replace(input, toRemove, "", 1)
+	input = strings.TrimPrefix(input, toRemove)
 	return input
+}
+
+func formatPrice(input string) int {
+	number, _ := strconv.Atoi(strings.TrimSuffix(input, ".00"))
+	return number
 }
 
 
