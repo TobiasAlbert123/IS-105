@@ -9,6 +9,7 @@ import (
 	"log"
 	"runtime"
 	"os/exec"
+	"html/template"
 )
 
 type Location struct {
@@ -21,9 +22,12 @@ type Location struct {
 }
 
 func main () {
-	location := Location{}
+	http.HandleFunc("/", Page)
+	http.ListenAndServe(":8080", nil)
+	//location := Location{}
 
 	//mapsUrl := "https://www.google.com/maps/search/18.6785+89.7448"
+	/*
 	for {
 		err := json.Unmarshal(getJson(), &location)
 		if err != nil {
@@ -38,10 +42,38 @@ func main () {
 		long := location.IssPosition.Longitude
 		mapsUrl := "https://www.google.com/maps/search/" + lat + "+" + long
 		fmt.Println(mapsUrl)
-		open(mapsUrl)
+		//open(mapsUrl)
+
 		//placeholder := "https://www.google.com/maps/search/-50.1085+-154.3239"
-	}
+	}*/
 	//mapsBaseUrl := "https://www.google.com/maps/search/" + "lat" + "+" + "long"
+}
+
+func getAndPrintJson() *Location{
+	location := Location{}
+	err := json.Unmarshal(getJson(), &location)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Unix timestamp: %d\n", location.Timestamp)
+	fmt.Printf("'Normal' timestamp: %s\n", time.Unix(int64(location.Timestamp), 0))
+	fmt.Printf("Latitude: %s\n", location.IssPosition.Latitude)
+	fmt.Printf("Longitude: %s\n\n", location.IssPosition.Longitude)
+	time.Sleep(time.Second *5)
+	lat := location.IssPosition.Latitude
+	long := location.IssPosition.Longitude
+	mapsUrl := "https://www.google.com/maps/search/" + lat + "+" + long
+	fmt.Println(mapsUrl)
+
+	return &location
+}
+
+func loadTemplate(w http.ResponseWriter, page *Location) {
+	t, err := template.ParseFiles("iss.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	t.Execute(w, page)
 }
 
 func open(url string) error {
@@ -81,4 +113,17 @@ func getJson() []byte {
 		fmt.Println(err)
 	}
 	return body
+}
+
+func Page(w http.ResponseWriter, r *http.Request) {
+	for {
+		loadTemplate(w, getAndPrintJson())
+		
+		time.Sleep(time.Second * 4)
+		http.ServeFile(w, r, "empty.html")
+	}
+}
+
+func checkForErrors(url string) {
+	http.Get(url)
 }

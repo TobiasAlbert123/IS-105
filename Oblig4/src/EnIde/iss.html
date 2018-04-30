@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body id="body">
+    <p>Timestamp: {{.Timestamp}}</p>
+    <p>Latitude: {{.IssPosition.Latitude}}</p>
+    <p>Longitude: {{.IssPosition.Longitude}}</p>
+    <iframe
+            width="600"
+            height="450"
+            frameborder="0" style="border:0"
+            id="map"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q={{.IssPosition.Latitude}}+{{.IssPosition.Longitude}}&zoom=1.9" allowfullscreen>
+    </iframe>
+</body>
+</html>
