@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"os/exec"
 	"html/template"
+	"strings"
 )
 
 type Location struct {
@@ -23,6 +24,8 @@ type Location struct {
 
 func main () {
 	http.HandleFunc("/", Page)
+	http.HandleFunc("/err", ErrPage)
+	http.HandleFunc("/2", Page2)
 	http.ListenAndServe(":8080", nil)
 	//location := Location{}
 
@@ -118,12 +121,33 @@ func getJson() []byte {
 func Page(w http.ResponseWriter, r *http.Request) {
 	for {
 		loadTemplate(w, getAndPrintJson())
-		
+		checkForErrors(w, "http://127.0.0.1:8080/err")
 		time.Sleep(time.Second * 4)
 		http.ServeFile(w, r, "empty.html")
 	}
 }
 
-func checkForErrors(url string) {
-	http.Get(url)
+func ErrPage(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "iss2.html")
+		time.Sleep(time.Second * 1)
+		checkForErrors(w, "http://127.0.0.1:8080/2")
+}
+
+func Page2(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "iss2.html")
+}
+
+func checkForErrors(w http.ResponseWriter, url string) {
+		page, _ := http.Get(url)
+		reading, _ := ioutil.ReadAll(page.Body)
+	if !strings.Contains(string(reading), "AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI") {
+		fmt.Fprintln(w,"=======================================================")
+		fmt.Fprintln(w,"You dont have the correct API key")
+		fmt.Fprintln(w,"=======================================================")
+	}
+	if strings.Contains(string(reading), "Lat") {
+		fmt.Fprintln(w,"=======================================================")
+		fmt.Fprintln(w,"=======================================================")
+	}
+
 }
