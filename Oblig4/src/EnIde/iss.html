@@ -3,9 +3,11 @@
 <head>
 </head>
 <body id="body">
-    <p>Timestamp: {{.Timestamp}}</p>
-    <p>Latitude: {{.IssPosition.Latitude}}</p>
-    <p>Longitude: {{.IssPosition.Longitude}}</p>
+    <p id="timestamp" value="{{.Timestamp}}">Timestamp: {{.Timestamp}}</p>
+    <p id="latitude" value="{{.IssPosition.Latitude}}">Latitude: {{.IssPosition.Latitude}}</p>
+    <p id="longitude" value="{{.IssPosition.Longitude}}">Longitude: {{.IssPosition.Longitude}}</p>
+    <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
+    <h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>
     <iframe
             width="600"
             height="450"
