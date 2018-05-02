@@ -1,5 +1,5 @@
-To do list:
-  -Systemarkitektur    
+To do list:  
+  -Systemarkitektur  
   -Systemspesifikasjon  
   -CSS styling  
   -Timestamp  
