@@ -2,10 +2,12 @@ To do list:
   - Systemarkitektur  
   - Systemspesifikasjon  
   - CSS styling  
+  - Evt photoshop  
   - Timestamp: Unix til vanlig tid  
   - Flere backup API keys til reverse geocoding
   - Enhetstester (f.eks. på api-linker)
-  - Evt photoshop
+  - ISS Speed fra posisjonoppdateringer
+  - Trykk for embedded reisevei
 
 
 
