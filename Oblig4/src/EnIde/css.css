@@ -1,0 +1,16 @@
+body {
+    background: linear-gradient(to right, #ccc, #444);
+}
+
+h2 {
+    font-family: "Comic Sans MS";
+}
+
+.astro {
+    background-color: blue;
+    color: lawngreen;
+}
+
+#astro {
+    background: tomato;
+}
