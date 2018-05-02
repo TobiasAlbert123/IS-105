@@ -4,24 +4,26 @@
     <link rel="stylesheet" type="text/css" href="css">
 </head>
 <body id="body">
-    <p id="timestamp" value="{{.Timestamp}}">Timestamp: {{.Timestamp}}</p>
-    <p id="latitude" value="{{.IssPosition.Latitude}}">Latitude: {{.IssPosition.Latitude}}</p>
-    <p id="longitude" value="{{.IssPosition.Longitude}}">Longitude: {{.IssPosition.Longitude}}</p>
+    <p id="unixtime" value="{{.UnixTime}}">Unix Timestamp: {{.UnixTime}}</p>
+    <p id="utctime" value="{{.UTCTime}}">UTC Timestamp: {{.UTCTime}}</p>
+    <p id="latitude" value="{{.Pos.Latitude}}">Latitude: {{.Pos.Latitude}}</p>
+    <p id="longitude" value="{{.Pos.Longitude}}">Longitude: {{.Pos.Longitude}}</p>
     <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
-    <p> Current astronaut aboard ISS</p>
-    <p class="astro">{{.Name0}}: {{.Day1}} Days, {{.Hour1}} hours</p>
-    <p id="astro">{{.Name1}}: {{.Day1}} Days, {{.Hour1}} hours</p>
-    <p>{{.Name2}}: {{.Day1}} Days, {{.Hour1}} hours</p>
-    <p>{{.Name3}}: {{.Day2}} Days, {{.Hour2}} hours</p>
-    <p>{{.Name4}}: {{.Day2}} Days, {{.Hour2}} hours</p>
-    <p>{{.Name5}}: {{.Day2}} Days, {{.Hour2}} hours</p>
+    <br>
+    <p>Current astronaut aboard ISS</p>
+    <p class="astro">{{.Name0}}: {{.DayA}} Days, {{.HourA}} hours</p>
+    <p id="astro">{{.Name1}}: {{.DayA}} Days, {{.HourA}} hours</p>
+    <p>{{.Name2}}: {{.DayA}} Days, {{.HourA}} hours</p>
+    <p>{{.Name3}}: {{.DayB}} Days, {{.HourB}} hours</p>
+    <p>{{.Name4}}: {{.DayB}} Days, {{.HourB}} hours</p>
+    <p>{{.Name5}}: {{.DayB}} Days, {{.HourB}} hours</p>
     <h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>
     <iframe
             width="600"
             height="450"
             frameborder="0" style="border:0"
             id="map"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q={{.IssPosition.Latitude}}+{{.IssPosition.Longitude}}&zoom=1.9" allowfullscreen>
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q={{.Pos.Latitude}}+{{.Pos.Longitude}}&zoom=1.9" allowfullscreen>
     </iframe>
 </body>
 </html>

@@ -7,33 +7,36 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"log"
-	"runtime"
-	"os/exec"
 	"html/template"
 	"math"
+	"runtime"
+	"os/exec"
 )
 
-type Location struct {
-	IssPosition struct {
+//struct for issData Position API
+type issData struct {
+	Pos struct {
 		Latitude  string `json:"latitude"`
 		Longitude string `json:"longitude"`
 	} `json:"iss_position"`
-	Message   string `json:"message"`
-	Timestamp int    `json:"timestamp"`
-	Country	string
-	UpdateFrequency	int
-	Name0	string
-	Name1	string
-	Name2	string
-	Name3	string
-	Name4	string
-	Name5	string
-	Day1	int
-	Day2	int
-	Hour1	int
-	Hour2	int
+	Message         string `json:"message"`
+	UnixTime        int    `json:"timestamp"`
+	UTCTime         time.Time
+	Country         string
+	UpdateFrequency int
+	Name0           string
+	Name1           string
+	Name2           string
+	Name3           string
+	Name4           string
+	Name5           string
+	DayA            int
+	DayB            int
+	HourA           int
+	HourB           int
 }
 
+//struct for the Google Reverse Geocoding API
 type CountryFinder struct {
 	Results []struct {
 		AddressComponents []struct {
@@ -47,12 +50,15 @@ type CountryFinder struct {
 }
 
 //not needed as var, but need to store it somewhere
+//API Key for Google Maps Embed
 var apiKey = "AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI"
 
+//these are API Keys for reverse geocoding
 var geoKey = "AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
-
 var geoKey2 = "AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw"
-
+var geoKey3 = ""
+var geoKey4 = ""
+var geoKey5 = ""
 var sliceOfGeoKeys = []string{geoKey, geoKey2}
 
 var geoKeysUsed = 0
@@ -61,16 +67,16 @@ var currentGeoKey = sliceOfGeoKeys[geoKeysUsed]
 
 var updateFrequency = 10
 
-var invalidData = false
+var invalidData bool
 
 func main () {
 	//overloadCountryFinder("AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw")
+	invalidData = false
 	http.HandleFunc("/", Page)
-	http.HandleFunc("/err", ErrPage)
-	http.HandleFunc("/2", Page2)
 	http.HandleFunc("/css", CssPage)
 	http.ListenAndServe(":8080", nil)
-	//location := Location{}
+	time.Sleep(time.Minute*10)
+	//location := issData{}
 
 	//mapsUrl := "https://www.google.com/maps/search/18.6785+89.7448"
 	/*
@@ -79,13 +85,13 @@ func main () {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Unix timestamp: %d\n", location.Timestamp)
-		fmt.Printf("'Normal' timestamp: %s\n", time.Unix(int64(location.Timestamp), 0))
-		fmt.Printf("Latitude: %s\n", location.IssPosition.Latitude)
-		fmt.Printf("Longitude: %s\n\n", location.IssPosition.Longitude)
+		fmt.Printf("Unix timestamp: %d\n", location.UnixTime)
+		fmt.Printf("'Normal' timestamp: %s\n", time.Unix(int64(location.UnixTime), 0))
+		fmt.Printf("Latitude: %s\n", location.Pos.Latitude)
+		fmt.Printf("Longitude: %s\n\n", location.Pos.Longitude)
 		time.Sleep(time.Second *5)
-		lat := location.IssPosition.Latitude
-		long := location.IssPosition.Longitude
+		lat := location.Pos.Latitude
+		long := location.Pos.Longitude
 		mapsUrl := "https://www.google.com/maps/search/" + lat + "+" + long
 		fmt.Println(mapsUrl)
 		//open(mapsUrl)
@@ -95,11 +101,70 @@ func main () {
 	//mapsBaseUrl := "https://www.google.com/maps/search/" + "lat" + "+" + "long"
 }
 
+//gets json from url
+func getJson(url string) []byte {
+	client := http.Client{
+		Timeout: time.Second *2,
+	}
+	request, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	response, err := client.Do(request)
+	if err != nil {
+		fmt.Println(err)
+	}
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return body
+}
+
+
+var attemptedUnmarshals = 0
+
+//unmarshals and formats json
+func formatJson() *issData {
+	iss := issData{}
+	url := "http://api.open-notify.org/iss-now.json"
+	err := json.Unmarshal(getJson(url), &iss)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//printJson(iss)
+	if isEmpty(iss) {
+		invalidData = true
+	}
+
+	iss.Country = getCountry(iss.Pos.Latitude, iss.Pos.Longitude)
+	iss.UpdateFrequency = updateFrequency
+	names, days, hours := CountingTimeThing()
+	iss.Name0, iss.Name1, iss.Name2, iss.Name3, iss.Name4, iss.Name5 = names[0], names[1], names[2], names[3], names[4], names[5]
+	iss.DayA, iss.DayB = days[0], days[1]
+	iss.HourA, iss.HourB = hours[0], hours[1]
+	iss.UTCTime = time.Unix(int64(iss.UnixTime), 0)
+
+	//attempts the function again 10 times if data collection was unsuccessful
+	if iss.Message != "success" && attemptedUnmarshals < 10 {
+		fmt.Println(iss.Message,len(iss.Message))
+		attemptedUnmarshals++
+		if attemptedUnmarshals < 10 {
+			time.Sleep(time.Millisecond*5)
+			formatJson()
+		}
+		log.Fatalf("%d attemps at collecting ISS API data were unsuccessful. Ensure url (%s) is correct", attemptedUnmarshals, url)
+	}
+	return &iss
+}
+
 func getCountry(lat, long string) string{
 	results := CountryFinder{}
-	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=-48.489638,22.767979&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
-	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+geoKey
-	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
+	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+geoKey
+
+	//url for a location in Canada that lists json data slightly differently
+	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
+
 	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
 		log.Fatal(err)
@@ -109,7 +174,7 @@ func getCountry(lat, long string) string{
 			nextGeoKey()
 			getCountry(lat, long)
 		case "ZERO_RESULTS":
-			results.Country = "Location is not in a country (it is probably in the ocean)"
+			results.Country = "Country information available - location likely in the ocean"
 		default:
 			//country := results.Results[0].AddressComponents[len(results.Results[0].AddressComponents)-1].LongName
 			country := ""
@@ -132,146 +197,32 @@ func nextGeoKey() {
 	if geoKeysUsed <= len(sliceOfGeoKeys) {
 		currentGeoKey = sliceOfGeoKeys[geoKeysUsed]
 	} else {
-		log.Fatal("No more API keys for finding country available")
+		log.Fatal("No more API keys for reverse geocoding available")
 	}
 }
 
-//used to find error messages when api key usage has been exceeded
-func overloadCountryFinder(overloadKey string) {
-	for i := 0; i < 2500; i++ {
-		ting, _ := http.Get("https://maps.googleapis.com/maps/api/geocode/json?latlng=-18.489638,22.767979&key="+overloadKey)
-		read, _ := ioutil.ReadAll(ting.Body)
-		fmt.Println(string(read))
-		fmt.Println(i)
-	}
-}
-
-//unmarshals json
-func unmarshalJson() *Location{
-	location := Location{}
-	url := "http://api.open-notify.org/iss-now.json"
-	err := json.Unmarshal(getJson(url), &location)
-	if err != nil {
-		log.Fatal(err)
-	}
-	//printJson(location)
-	if isEmpty(location) {
-		invalidData = true
-	}
-	location.Country = getCountry(location.IssPosition.Latitude, location.IssPosition.Longitude)
-	location.UpdateFrequency = updateFrequency
-	names, days, hours := CountingTimeThing()
-	location.Name0, location.Name1, location.Name2, location.Name3, location.Name4, location.Name5 = names[0], names[1], names[2], names[3], names[4], names[5]
-	location.Day1, location.Day2 = days[0], days[1]
-	location.Hour1, location.Hour2 = hours[0], hours[1]
-	location.IssPosition.Latitude, location.IssPosition.Longitude = "51.62", "-60.63"
-
-	return &location
-}
-
-func isEmpty(location Location) bool {
-	//location.Timestamp = 0
-	if location.Timestamp == 0  || location.IssPosition.Latitude == "" || location.IssPosition.Longitude == "" {
+func isEmpty(iss issData) bool {
+	//iss.UnixTime = 0
+	if iss.UnixTime == 0  || iss.Pos.Latitude == "" || iss.Pos.Longitude == "" {
 		return true
 	}
 	return false
 }
 
-//-28.489638,22.767979
-
-//prints json in console
-func printJson(location Location) {
-	fmt.Printf("Unix timestamp: %d\n", location.Timestamp)
-	fmt.Printf("'Normal' timestamp: %s\n", time.Unix(int64(location.Timestamp), 0))
-	fmt.Printf("Latitude: %s\n", location.IssPosition.Latitude)
-	fmt.Printf("Longitude: %s\n\n", location.IssPosition.Longitude)
-	time.Sleep(time.Second *5)
-	lat := location.IssPosition.Latitude
-	long := location.IssPosition.Longitude
-	mapsUrl := "https://www.google.com/maps/search/" + lat + "+" + long
-	fmt.Println(mapsUrl)
-}
 
 //renders template to client
-func renderTemplate(w http.ResponseWriter, page *Location) {
+func renderTemplate(w http.ResponseWriter, page *issData) {
 	t, err := template.ParseFiles("iss.html")
 	if err != nil {
 		log.Fatal(err)
 	}
-	if !invalidData {
+	//if !invalidData {
 		t.Execute(w, page)
-	} else {
-		fmt.Fprintln(w, "404: Some or all data were nil")
-	}
+	//} else {
+	//	fmt.Fprintln(w, "404: Some or all data were nil. Sorry!")
+	//}
 }
 
-//opens a url in default browser
-func open(url string) error {
-	var cmd string
-	var args []string
-
-	switch runtime.GOOS {
-	case "windows":
-		cmd = "cmd"
-		args = []string{"/c", "start"}
-	case "darwin":
-		cmd = "open"
-	default: // "linux", "freebsd", "openbsd", "netbsd"
-		cmd = "xdg-open"
-	}
-	args = append(args, url)
-	return exec.Command(cmd, args...).Start()
-}
-
-// embeddedlinkbase = "https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q=" + lat + "+" + long
-
-//gets json from url
-func getJson(url string) []byte {
-	client := http.Client{
-		Timeout: time.Second *2,
-	}
-	request, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		fmt.Println(err)
-	}
-	response, err := client.Do(request)
-	if err != nil {
-		fmt.Println(err)
-	}
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return body
-}
-
-//main page
-func Page(w http.ResponseWriter, r *http.Request) {
-	for {
-		renderTemplate(w, unmarshalJson())
-		//checkForErrors(w, "http://127.0.0.1:8080/")
-		time.Sleep(time.Second * time.Duration(updateFrequency))
-		http.ServeFile(w, r, "empty.html")
-		time.Sleep(time.Millisecond * 10)
-		//fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
-	}
-}
-
-//page for testing errors
-func ErrPage(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "iss2.html")
-		time.Sleep(time.Second * 1)
-		checkForErrors(w, "http://127.0.0.1:8080/2")
-}
-
-//another random page for errors
-func Page2(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "iss2.html")
-}
-
-func CssPage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "css.css")
-}
 
 func CountingTimeThing() ([]string, []int, []int){
 	names := []string{"Scott Tingle", "Anton Skhaplerov", "Norishige Kanai", "Andrew Feustel", "Richard Arnold", "Oleg Martemyev"}
@@ -284,28 +235,26 @@ func CountingTimeThing() ([]string, []int, []int){
 	hours2 := int(math.Floor(float64(time.Now().Sub(batch2).Hours()))) % 24
 	days := []int{time1, time2}
 	hours := []int{hours1, hours2}
-	//start := time.Date(2017, time.December, 17, 0, 0, 0, 0, time.UTC)
+
 	ticker0 := time.Tick(time.Second*5)
 	time.Sleep(time.Millisecond*50)
-	//newStart := time.Date(2017, time.December, 17, 0, 0, 0, 0, time.UTC)
+
 	ticker1 := time.Tick(time.Second*5)
 	time.Sleep(time.Millisecond*50)
-	//newStart1 := time.Date(2017, time.December, 17, 0, 0, 0, 0, time.UTC)
+
 	ticker2 := time.Tick(time.Second*5)
 	time.Sleep(time.Millisecond*50)
-	//newStart2 := time.Date(2018, time.March, 21, 0, 0, 0, 0, time.UTC)
+
 	ticker3 := time.Tick(time.Second*5)
 	time.Sleep(time.Millisecond*50)
-	//newStart3 := time.Date(2018, time.March, 21, 0, 0, 0, 0, time.UTC)
+
 	ticker4 := time.Tick(time.Second*5)
 	time.Sleep(time.Millisecond*50)
-	//newStart4 := time.Date(2018, time.March, 21, 0, 0, 0, 0, time.UTC)
+
 	ticker5 := time.Tick(time.Second*5)
 	time.Sleep(time.Millisecond*50)
 
 	if false {
-
-		go func() {
 			for {
 				select {
 				case <-ticker0:
@@ -340,35 +289,70 @@ func CountingTimeThing() ([]string, []int, []int){
 
 				}
 			}
-		}()
-		//select {}
 	}
 	return names, days, hours
 }
 
-//checks errors
-func checkForErrors(w http.ResponseWriter, url string) {
+//main page
+func Page(w http.ResponseWriter, r *http.Request) {
+	//for {
+		renderTemplate(w, formatJson())
+		//checkForErrors(w, "http://127.0.0.1:8080/")
+		time.Sleep(time.Second * time.Duration(updateFrequency))
+		//http.ServeFile(w, r, "empty.html")
+		/* Alternatively:
+		fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
+		*/
+		//time.Sleep(time.Millisecond * 1000)
+	//}
+}
 
-	/*
-		page, err := http.Get(url)
-		if err != nil {
-			fmt.Println("Error getting page at url")
-			log.Fatal(err)
-		}
-		reading, err := ioutil.ReadAll(page.Body)
-		if err != nil {
-			fmt.Println("Error reading page body")
-			log.Fatal(err)
-		}
-		fmt.Fprintln(w, string(string(reading)))
-	if strings.Contains(string(reading), "AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI") {
-		fmt.Fprintln(w,"=======================================================")
-		fmt.Fprintln(w,"You dont have the correct API key")
-		fmt.Fprintln(w,"=======================================================")
+//page where css file is hosted (used by template in main page)
+func CssPage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "css.css")
+}
+
+/**
+*Functions not in use below
+ */
+
+//used to find error messages when api key usage has been exceeded
+func overloadCountryFinder(overloadKey string) {
+	for i := 0; i < 2500; i++ {
+		ting, _ := http.Get("https://maps.googleapis.com/maps/api/geocode/json?latlng=-18.489638,22.767979&key="+overloadKey)
+		read, _ := ioutil.ReadAll(ting.Body)
+		fmt.Println(string(read))
+		fmt.Println(i)
 	}
-	if strings.Contains(string(reading), "Lat") {
-		fmt.Fprintln(w,"=======================================================")
-		fmt.Fprintln(w,"=======================================================")
-	}*/
+}
 
+//prints json in console
+func printJson(iss issData) {
+	fmt.Printf("Unix timestamp: %d\n", iss.UnixTime)
+	fmt.Printf("'Normal' timestamp: %s\n", time.Unix(int64(iss.UnixTime), 0))
+	fmt.Printf("Latitude: %s\n", iss.Pos.Latitude)
+	fmt.Printf("Longitude: %s\n\n", iss.Pos.Longitude)
+	time.Sleep(time.Second *5)
+	lat := iss.Pos.Latitude
+	long := iss.Pos.Longitude
+	mapsUrl := "https://www.google.com/maps/search/" + lat + "+" + long
+	fmt.Println(mapsUrl)
+}
+
+//opens a url in default browser
+func open(url string) error {
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		cmd = "xdg-open"
+	}
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
 }
