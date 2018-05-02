@@ -1,6 +1,7 @@
 To do list:
-  -Systemarkitektur
-  -Systemspesifikasjon
-  -CSS styling
-  -Timestamp
+  -Systemarkitektur  
+  -Systemspesifikasjon  
+  -CSS styling  
+  -Timestamp  
+  -Evt se photoshop
   
