@@ -2,7 +2,9 @@ To do list:
   - Systemarkitektur  
   - Systemspesifikasjon  
   - CSS styling  
-  - Timestamp  
+  - Timestamp: Unix til vanlig tid  
+  - Flere backup API keys til reverse geocoding
+  - Enhetstester (f.eks. på api-linker)
   - Evt photoshop
 
 
