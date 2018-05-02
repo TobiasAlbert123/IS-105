@@ -33,32 +33,32 @@ func main() {
 			case <- ticker:
 				t := time.Now()
 				elapsed := t.Sub(start)
-				fmt.Printf("Scott Tingle has been in space, %.0f, days\n", elapsed.Hours()/24)
+				fmt.Printf("Scott Tingle has been in space %.0f days\n", elapsed.Hours()/24)
 
 			case <- newTicker:
 				t := time.Now()
 				elapsed := t.Sub(newStart)
-				fmt.Printf("Anton Skhaplerov has been in space, %.0f, days\n", elapsed.Hours()/24)
+				fmt.Printf("Anton Skhaplerov has been in space %.0f days\n", elapsed.Hours()/24)
 
 			case <- newTicker1:
 				t := time.Now()
 				elapsed := t.Sub(newStart1)
-				fmt.Printf("Norishige Kanai has been in space, %.0f, days\n", elapsed.Hours()/24)
+				fmt.Printf("Norishige Kanai has been in space %.0f days\n", elapsed.Hours()/24)
 
 			case <- newTicker2:
 				t := time.Now()
 				elapsed := t.Sub(newStart2)
-				fmt.Printf("Andrew Feustel has been in space, %.0f, days\n", elapsed.Hours()/24)
+				fmt.Printf("Andrew Feustel has been in space %.0f days\n", elapsed.Hours()/24)
 
 			case <- newTicker3:
 				t := time.Now()
 				elapsed := t.Sub(newStart3)
-				fmt.Printf("Richard Arnold has been in space, %.0f, days\n", elapsed.Hours()/24)
+				fmt.Printf("Richard Arnold has been in space %.0f days\n", elapsed.Hours()/24)
 
 			case <- newTicker4:
 				t := time.Now()
 				elapsed := t.Sub(newStart4)
-				fmt.Printf("Oleg Martemyev has been in space, %.0f, days\n", elapsed.Hours()/24)
+				fmt.Printf("Oleg Martemyev has been in space %.0f days\n", elapsed.Hours()/24)
 
 			}
 

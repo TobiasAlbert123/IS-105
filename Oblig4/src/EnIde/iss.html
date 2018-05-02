@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="css">
 </head>
 <body id="body">
     <p id="timestamp" value="{{.Timestamp}}">Timestamp: {{.Timestamp}}</p>
     <p id="latitude" value="{{.IssPosition.Latitude}}">Latitude: {{.IssPosition.Latitude}}</p>
     <p id="longitude" value="{{.IssPosition.Longitude}}">Longitude: {{.IssPosition.Longitude}}</p>
     <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
+    <p> Current astronaut aboard ISS</p>
+    <p class="astro">{{.Name0}}: {{.Day1}} Days, {{.Hour1}} hours</p>
+    <p id="astro">{{.Name1}}: {{.Day1}} Days, {{.Hour1}} hours</p>
+    <p>{{.Name2}}: {{.Day1}} Days, {{.Hour1}} hours</p>
+    <p>{{.Name3}}: {{.Day2}} Days, {{.Hour2}} hours</p>
+    <p>{{.Name4}}: {{.Day2}} Days, {{.Hour2}} hours</p>
+    <p>{{.Name5}}: {{.Day2}} Days, {{.Hour2}} hours</p>
     <h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>
     <iframe
             width="600"

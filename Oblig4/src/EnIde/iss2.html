@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="css">
 </head>
 <body id="body">
-    <p id="timestamp" value="{{.Timestamp}}">Timestamp: {{.Timestamp}}</p>
-    <p id="latitude" value="{{.IssPosition.Latitude}}">Latitude: {{.IssPosition.Latitude}}</p>
-    <p id="longitude" value="{{.IssPosition.Longitude}}">Longitude: {{.IssPosition.Longitude}}</p>
-    <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
-    <iframe
-            width="600"
-            height="450"
-            frameborder="0" style="border:0"
-            id="map"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q={{.IssPosition.Latitude}}+{{.IssPosition.Longitude}}&zoom=1.9" allowfullscreen>
-    </iframe>
+<p id="timestamp" value="{{.Timestamp}}">Timestamp: {{.Timestamp}}</p>
+<p id="latitude" value="{{.IssPosition.Latitude}}">Latitude: {{.IssPosition.Latitude}}</p>
+<p id="longitude" value="{{.IssPosition.Longitude}}">Longitude: {{.IssPosition.Longitude}}</p>
+<p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
+<p>{{.Name0}}: {{.Day0}} Days</p>
+<p>{{.Name1}}: {{.Day1}} Days</p>
+<p>{{.Name2}}: {{.Day2}} Days</p>
+<p>{{.Name3}}: {{.Day3}} Days</p>
+<p>{{.Name4}}: {{.Day4}} Days</p>
+<p>{{.Name5}}: {{.Day5}} Days</p>
+<h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>
+<iframe
+        width="600"
+        height="450"
+        frameborder="0" style="border:0"
+        id="map"
+        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q=51.5694+-96.8628&zoom=1.9" allowfullscreen>
+</iframe>
 </body>
 </html>

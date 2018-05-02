@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"os/exec"
 	"html/template"
+	"math"
 )
 
 type Location struct {
@@ -21,6 +22,16 @@ type Location struct {
 	Timestamp int    `json:"timestamp"`
 	Country	string
 	UpdateFrequency	int
+	Name0	string
+	Name1	string
+	Name2	string
+	Name3	string
+	Name4	string
+	Name5	string
+	Day1	int
+	Day2	int
+	Hour1	int
+	Hour2	int
 }
 
 type CountryFinder struct {
@@ -57,6 +68,7 @@ func main () {
 	http.HandleFunc("/", Page)
 	http.HandleFunc("/err", ErrPage)
 	http.HandleFunc("/2", Page2)
+	http.HandleFunc("/css", CssPage)
 	http.ListenAndServe(":8080", nil)
 	//location := Location{}
 
@@ -86,7 +98,8 @@ func main () {
 func getCountry(lat, long string) string{
 	results := CountryFinder{}
 	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=-48.489638,22.767979&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
-	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+geoKey
+	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+geoKey
+	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
 	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
 		log.Fatal(err)
@@ -97,11 +110,17 @@ func getCountry(lat, long string) string{
 			getCountry(lat, long)
 		case "ZERO_RESULTS":
 			results.Country = "Location is not in a country (it is probably in the ocean)"
-			fmt.Println(results.Country)
 		default:
-			country := results.Results[0].AddressComponents[len(results.Results[0].AddressComponents)-1].LongName
+			//country := results.Results[0].AddressComponents[len(results.Results[0].AddressComponents)-1].LongName
+			country := ""
+			for i := 0; i < len(results.Results[0].AddressComponents); i++ {
+				for j := 0; j < len(results.Results[0].AddressComponents[i].Types); j++ {
+					if results.Results[0].AddressComponents[i].Types[j] == "country" {
+						country = results.Results[0].AddressComponents[i].LongName
+					}
+				}
+			}
 			results.Country = country
-			fmt.Println("country: ", country)
 	}
 	return results.Country
 
@@ -141,6 +160,12 @@ func unmarshalJson() *Location{
 	}
 	location.Country = getCountry(location.IssPosition.Latitude, location.IssPosition.Longitude)
 	location.UpdateFrequency = updateFrequency
+	names, days, hours := CountingTimeThing()
+	location.Name0, location.Name1, location.Name2, location.Name3, location.Name4, location.Name5 = names[0], names[1], names[2], names[3], names[4], names[5]
+	location.Day1, location.Day2 = days[0], days[1]
+	location.Hour1, location.Hour2 = hours[0], hours[1]
+	location.IssPosition.Latitude, location.IssPosition.Longitude = "51.62", "-60.63"
+
 	return &location
 }
 
@@ -222,13 +247,14 @@ func getJson(url string) []byte {
 
 //main page
 func Page(w http.ResponseWriter, r *http.Request) {
-	//for {
+	for {
 		renderTemplate(w, unmarshalJson())
 		//checkForErrors(w, "http://127.0.0.1:8080/")
 		time.Sleep(time.Second * time.Duration(updateFrequency))
-		//http.ServeFile(w, r, "empty.html")
+		http.ServeFile(w, r, "empty.html")
+		time.Sleep(time.Millisecond * 10)
 		//fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
-	//}
+	}
 }
 
 //page for testing errors
@@ -241,6 +267,83 @@ func ErrPage(w http.ResponseWriter, r *http.Request) {
 //another random page for errors
 func Page2(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "iss2.html")
+}
+
+func CssPage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "css.css")
+}
+
+func CountingTimeThing() ([]string, []int, []int){
+	names := []string{"Scott Tingle", "Anton Skhaplerov", "Norishige Kanai", "Andrew Feustel", "Richard Arnold", "Oleg Martemyev"}
+	batch1 := time.Date(2017, time.December, 17, 7, 21, 0, 0, time.UTC)
+	batch2 := time.Date(2018, time.March, 21, 17, 44, 0, 0, time.UTC)
+	//time1 := int(time.Now().Sub(batch1).Hours()/24)
+	time1 := int(math.Floor(float64(time.Now().Sub(batch1).Hours()/24)))
+	hours1 := int(math.Floor(float64(time.Now().Sub(batch1).Hours()))) % 24
+	time2 := int(math.Floor(time.Now().Sub(batch2).Hours()/24))
+	hours2 := int(math.Floor(float64(time.Now().Sub(batch2).Hours()))) % 24
+	days := []int{time1, time2}
+	hours := []int{hours1, hours2}
+	//start := time.Date(2017, time.December, 17, 0, 0, 0, 0, time.UTC)
+	ticker0 := time.Tick(time.Second*5)
+	time.Sleep(time.Millisecond*50)
+	//newStart := time.Date(2017, time.December, 17, 0, 0, 0, 0, time.UTC)
+	ticker1 := time.Tick(time.Second*5)
+	time.Sleep(time.Millisecond*50)
+	//newStart1 := time.Date(2017, time.December, 17, 0, 0, 0, 0, time.UTC)
+	ticker2 := time.Tick(time.Second*5)
+	time.Sleep(time.Millisecond*50)
+	//newStart2 := time.Date(2018, time.March, 21, 0, 0, 0, 0, time.UTC)
+	ticker3 := time.Tick(time.Second*5)
+	time.Sleep(time.Millisecond*50)
+	//newStart3 := time.Date(2018, time.March, 21, 0, 0, 0, 0, time.UTC)
+	ticker4 := time.Tick(time.Second*5)
+	time.Sleep(time.Millisecond*50)
+	//newStart4 := time.Date(2018, time.March, 21, 0, 0, 0, 0, time.UTC)
+	ticker5 := time.Tick(time.Second*5)
+	time.Sleep(time.Millisecond*50)
+
+	if false {
+
+		go func() {
+			for {
+				select {
+				case <-ticker0:
+					t := time.Now()
+					elapsed := t.Sub(batch1)
+					fmt.Printf("Scott Tingle has been in space %.0f days\n", elapsed.Hours()/24)
+
+				case <-ticker1:
+					t := time.Now()
+					elapsed := t.Sub(batch1)
+					fmt.Printf("Anton Skhaplerov has been in space %.0f days\n", elapsed.Hours()/24)
+
+				case <-ticker2:
+					t := time.Now()
+					elapsed := t.Sub(batch1)
+					fmt.Printf("Norishige Kanai has been in space %.0f days\n", elapsed.Hours()/24)
+
+				case <-ticker3:
+					t := time.Now()
+					elapsed := t.Sub(batch2)
+					fmt.Printf("Andrew Feustel has been in space %.0f days\n", elapsed.Hours()/24)
+
+				case <-ticker4:
+					t := time.Now()
+					elapsed := t.Sub(batch2)
+					fmt.Printf("Richard Arnold has been in space %.0f days\n", elapsed.Hours()/24)
+
+				case <-ticker5:
+					t := time.Now()
+					elapsed := t.Sub(batch2)
+					fmt.Printf("Oleg Martemyev has been in space %.0f days\n", elapsed.Hours()/24)
+
+				}
+			}
+		}()
+		//select {}
+	}
+	return names, days, hours
 }
 
 //checks errors
