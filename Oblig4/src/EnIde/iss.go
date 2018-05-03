@@ -14,6 +14,14 @@ import (
 	"strconv"
 )
 
+func main () {
+	invalidData = false
+	http.HandleFunc("/", Page)
+	http.HandleFunc("/css", CssPage)
+	http.HandleFunc("/s", StaticPage)
+	http.ListenAndServe(":8080", nil)
+}
+
 //struct for issData Position API
 type issData struct {
 	Pos struct {
@@ -66,13 +74,13 @@ type TimeZoneFinder struct {
 //API Key for Google Maps Embed
 var apiKey = "AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI"
 
-//these are API Keys for reverse geocoding
+//these are API Keys for reverse geocoding, timezones and elevation
 var geoKey = "AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
 var geoKey2 = "AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw"
-var geoKey3 = ""
-var geoKey4 = ""
+var geoKey3 = "AIzaSyC-eVqkAILczjX3KpepxwR2cAyXgaEvb8c"
+var geoKey4 = "AIzaSyDgGyEYCnYDCWCtODdiM-DSnuUTcN2XKCo"
 var geoKey5 = ""
-var sliceOfGeoKeys = []string{geoKey, geoKey2}
+var sliceOfGeoKeys = []string{geoKey, geoKey2, geoKey3, geoKey4}
 
 var geoKeysUsed = 0
 
@@ -85,43 +93,13 @@ var invalidData bool
 //var outside recursive function to prevent it from resetting infinitely
 var attemptedUnmarshals = 0
 
-func main () {
-	//overloadCountryFinder("AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw")
-	invalidData = false
-	http.HandleFunc("/", Page)
-	http.HandleFunc("/css", CssPage)
-	http.ListenAndServe(":8080", nil)
-	time.Sleep(time.Minute*10)
-	//location := issData{}
-
-	//mapsUrl := "https://www.google.com/maps/search/18.6785+89.7448"
-	/*
-	for {
-		err := json.Unmarshal(getJson(), &location)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("Unix timestamp: %d\n", location.UnixTime)
-		fmt.Printf("'Normal' timestamp: %s\n", time.Unix(int64(location.UnixTime), 0))
-		fmt.Printf("Latitude: %s\n", location.Pos.Latitude)
-		fmt.Printf("Longitude: %s\n\n", location.Pos.Longitude)
-		time.Sleep(time.Second *5)
-		lat := location.Pos.Latitude
-		long := location.Pos.Longitude
-		mapsUrl := "https://www.google.com/maps/search/" + lat + "+" + long
-		fmt.Println(mapsUrl)
-		//open(mapsUrl)
-
-		//placeholder := "https://www.google.com/maps/search/-50.1085+-154.3239"
-	}*/
-	//mapsBaseUrl := "https://www.google.com/maps/search/" + "lat" + "+" + "long"
-}
-
 //gets json from url
 func getJson(url string) []byte {
+/*
 	client := http.Client{
-		Timeout: time.Second *2,
+		Timeout: time.Second *10,
 	}
+
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		fmt.Println(err)
@@ -134,6 +112,10 @@ func getJson(url string) []byte {
 	if err != nil {
 		fmt.Println(err)
 	}
+*/
+	a, _ := http.Get(url)
+	body, _ := ioutil.ReadAll(a.Body)
+
 	return body
 }
 
@@ -166,19 +148,20 @@ func formatJson() *issData {
 	iss.UserTime = time.Unix(int64(iss.UnixTime), 0)
 
 	//timezone and local time
-	timezone, unixOffsett := getTimeZone(iss.Pos.Latitude, iss.Pos.Longitude, iss.UnixTime)
+	timezone, unixOffset := getTimeZone(iss.Pos.Latitude, iss.Pos.Longitude, iss.UnixTime)
+
+
 	iss.TimeZone = timezone
-	localtime := iss.UnixTime + unixOffsett
+	localtime := iss.UnixTime + unixOffset
 	iss.LocalTime = time.Unix(int64(localtime), 0)
-	if unixOffsett != 0 {
+
+
+	if timezone != "Timezone not found" && timezone != "Denied access, use https"{
 		iss.LocalTimeMsg = "Timestamp (local timezone): " + iss.LocalTime.String()
 	} else {
-		if timezone != "" {
-			iss.LocalTimeMsg = "Timestamp (local timezone): " + iss.LocalTime.String()
-		} else {
-			iss.LocalTimeMsg = ""
-		}
+		iss.LocalTimeMsg = ""
 	}
+
 
 	//attempts the function again 10 times if data collection was unsuccessful
 	if iss.Message != "success" && attemptedUnmarshals < 10 {
@@ -199,7 +182,7 @@ func getCountry(lat, long string) string{
 	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+currentGeoKey
 
 	//url for a location in Canada that lists json data slightly differently
-	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
+	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw"
 
 	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
@@ -230,6 +213,7 @@ func getCountry(lat, long string) string{
 //returns timezone and offsett from unixtime (in seconds)
 func getTimeZone(lat, long string, unixTime int) (string, int){
 	timestamp := strconv.Itoa(unixTime)
+	//testurl := "https://maps.googleapis.com/maps/api/timezone/json?location=-13.0417,69.2496&timestamp=1525377238&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
 	url := "https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
 	timezone := TimeZoneFinder{}
 	err := json.Unmarshal(getJson(url), &timezone)
@@ -244,6 +228,12 @@ func getTimeZone(lat, long string, unixTime int) (string, int){
 		getTimeZone(lat, long, unixTime)
 	case "ZERO_RESULTS":
 		timezone.TimeZoneName = "Timezone not found"
+	case "INVALID_REQUEST":
+		fmt.Println("invalid request for timezone")
+	case "REQUEST_DENIED":
+		timezone.TimeZoneName = "Denied access, use https"
+	default:
+		fmt.Println(timezone.Status, timezone.TimeZoneName)
 	}
 	return timezone.TimeZoneName, timezone.RawOffset
 }
@@ -366,16 +356,18 @@ func makeTicker() <-chan time.Time{
 
 //main page
 func Page(w http.ResponseWriter, r *http.Request) {
-	for {
-		renderTemplate(w, formatJson())
-		//checkForErrors(w, "http://127.0.0.1:8080/")
-		time.Sleep(time.Second * time.Duration(updateFrequency))
-		http.ServeFile(w, r, "empty.html")
-		/* Alternatively:
-		fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
-		*/
-		time.Sleep(time.Millisecond * 50)
-	}
+	renderTemplate(w, formatJson())
+	fmt.Printf("Using API Key #%d\n", geoKeysUsed+1)
+	time.Sleep(time.Second * time.Duration(updateFrequency))
+	http.ServeFile(w, r, "empty.html")
+	/* Alternatively:
+	fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
+	*/
+	Page(w, r)
+}
+
+func StaticPage(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, formatJson())
 }
 
 //page where css file is hosted (used by template in main page)

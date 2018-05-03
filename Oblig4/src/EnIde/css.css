@@ -6,11 +6,57 @@ h2 {
     font-family: "Comic Sans MS";
 }
 
-.astronaut {
-    background-color: blue;
-    color: lawngreen;
+
+#nav-bar {
+    overflow: hidden;
+    margin: 0 0 10px 0;
+    padding: 0;
+    background: #000;
 }
 
-#astro {
-    background: tomato;
+#nav-bar a {
+    float: left;
+    margin: 0 20px 0 20px;
+    background: #333;
+    color: #ddd;
+    padding: 5px;
+}
+
+#nav-bar a:hover {
+    background: #ddd;
+    color: #232323;
+}
+
+#astro-box {
+    float: left;
+    border: 2px black solid;
+    background: #337ab2;
+}
+
+#astro-title {
+    text-align: center;
+}
+
+.astronaut {
+    background-color: #232323;
+    color: #70fc55;
+    margin: 5px;
+    padding: 5px;
+}
+
+.astronaut:hover {
+    cursor: pointer;
+}
+
+#boxes {
+    overflow: hidden;
+}
+
+#info-box {
+    float: left;
+}
+
+
+#map-box {
+    float: right;
 }

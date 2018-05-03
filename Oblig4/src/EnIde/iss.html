@@ -5,25 +5,20 @@
     <link rel="icon" href="https://cdn3.iconfinder.com/data/icons/unigrid-phantom-vehicles-vol-3/60/001_108_iss_satellite_sputnik_gps_glonass_solar_panels_space_mks-128.png">
 </head>
 <body id="body">
-    <div>
+    <nav id="nav-bar">
+        <a href="/">Home</a>
+        <a href="/s">Static page</a>
+        <a href="/css">Css document</a>
+    </nav>
+    <div id="boxes">
         <div id="info-box">
             <p id="unixtime" value="{{.UnixTime}}">Unix Timestamp: {{.UnixTime}}</p>
             <p id="usertime" value="{{.UserTime}}">Timestamp (your timezone): {{.UserTime}}</p>
-            <p id="timezone" value="{{.TimeZone}}">Timezone: {{.TimeZone}}</p>
+            <p id="timezone" value="{{.TimeZone}}" onclick="wikipedia(id.valueOf())">Timezone: {{.TimeZone}}</p>
             <p id="localtime" value="{{.LocalTime}}">{{.LocalTimeMsg}}</p>
-            <p id="latitude" value="{{.Pos.Latitude}}">Latitude: {{.Pos.Latitude}}</p>
-            <p id="longitude" value="{{.Pos.Longitude}}">Longitude: {{.Pos.Longitude}}</p>
+            <p id="latitude" value="{{.Pos.Latitude}}" onclick="wikipedia(id.valueOf())">Latitude: {{.Pos.Latitude}}</p>
+            <p id="longitude" value="{{.Pos.Longitude}}" onclick="wikipedia('longitude')">Longitude: {{.Pos.Longitude}}</p>
             <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
-        </div>
-        <br>
-        <div id="astro-box">
-            <p>Current astronaut aboard ISS</p>
-            <p class="astronaut">{{.Name0}}: {{.DayA}} Days, {{.HourA}} hours</p>
-            <p id="astro">{{.Name1}}: {{.DayA}} Days, {{.HourA}} hours</p>
-            <p>{{.Name2}}: {{.DayA}} Days, {{.HourA}} hours</p>
-            <p>{{.Name3}}: {{.DayB}} Days, {{.HourB}} hours</p>
-            <p>{{.Name4}}: {{.DayB}} Days, {{.HourB}} hours</p>
-            <p>{{.Name5}}: {{.DayB}} Days, {{.HourB}} hours</p>
         </div>
         <div id="map-box">
             <h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>
@@ -35,6 +30,33 @@
                     src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q={{.Pos.Latitude}}+{{.Pos.Longitude}}&zoom=1.9" allowfullscreen>
             </iframe>
         </div>
+        <br>
+        <div id="astro-box">
+            <p id="astro-title">Current astronaut aboard ISS</p>
+            <p class="astronaut" id="{{.Name0}}" onclick="wikipedia(id.valueOf())">
+                {{.Name0}}: {{.DayA}} Days, {{.HourA}} hours
+            </p>
+            <p class="astronaut" id="{{.Name1}}" onclick="wikipedia(id.valueOf())">
+                {{.Name1}}: {{.DayA}} Days, {{.HourA}} hours
+            </p>
+            <p class="astronaut" id="{{.Name2}}" onclick="wikipedia(id.valueOf())">
+                {{.Name2}}: {{.DayA}} Days, {{.HourA}} hours
+            </p>
+            <p class="astronaut" id="{{.Name3}}" onclick="wikipedia(id.valueOf())">
+                {{.Name3}}: {{.DayB}} Days, {{.HourB}} hours
+            </p>
+            <p class="astronaut" id="{{.Name4}}" onclick="wikipedia(id.valueOf())">
+                {{.Name4}}: {{.DayB}} Days, {{.HourB}} hours
+            </p>
+            <p class="astronaut" id="{{.Name5}}" onclick="wikipedia(id.valueOf())">
+                {{.Name5}}: {{.DayB}} Days, {{.HourB}} hours
+            </p>
+        </div>
     </div>
+    <script>/*
+        function wikipedia(input) {
+            window.open('https://en.wikipedia.org/wiki/'+input, '_blank')
+        }*/
+    </script>
 </body>
 </html>
