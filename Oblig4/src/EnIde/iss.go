@@ -11,6 +11,7 @@ import (
 	"math"
 	"runtime"
 	"os/exec"
+	"strconv"
 )
 
 //struct for issData Position API
@@ -21,7 +22,8 @@ type issData struct {
 	} `json:"iss_position"`
 	Message         string `json:"message"`
 	UnixTime        int    `json:"timestamp"`
-	UTCTime         time.Time
+	UserTime        time.Time
+	LocalTime		time.Time
 	Country         string
 	UpdateFrequency int
 	Name0           string
@@ -34,6 +36,8 @@ type issData struct {
 	DayB            int
 	HourA           int
 	HourB           int
+	TimeZone		string
+
 }
 
 //struct for the Google Reverse Geocoding API
@@ -47,6 +51,14 @@ type CountryFinder struct {
 	}
 	Status	string	`json:"status"`
 	Country	string
+}
+
+type TimeZoneFinder struct {
+	DstOffset    int    `json:"dstOffset"`
+	RawOffset    int    `json:"rawOffset"`
+	Status       string `json:"status"`
+	TimeZoneID   string `json:"timeZoneId"`
+	TimeZoneName string `json:"timeZoneName"`
 }
 
 //not needed as var, but need to store it somewhere
@@ -139,11 +151,13 @@ func formatJson() *issData {
 
 	iss.Country = getCountry(iss.Pos.Latitude, iss.Pos.Longitude)
 	iss.UpdateFrequency = updateFrequency
-	names, days, hours := CountingTimeThing()
+	names, days, hours := timeSinceLaunch()
 	iss.Name0, iss.Name1, iss.Name2, iss.Name3, iss.Name4, iss.Name5 = names[0], names[1], names[2], names[3], names[4], names[5]
 	iss.DayA, iss.DayB = days[0], days[1]
 	iss.HourA, iss.HourB = hours[0], hours[1]
-	iss.UTCTime = time.Unix(int64(iss.UnixTime), 0)
+	iss.UserTime = time.Unix(int64(iss.UnixTime), 0)
+
+	//timezone here
 
 	//attempts the function again 10 times if data collection was unsuccessful
 	if iss.Message != "success" && attemptedUnmarshals < 10 {
@@ -160,7 +174,7 @@ func formatJson() *issData {
 
 func getCountry(lat, long string) string{
 	results := CountryFinder{}
-	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+geoKey
+	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+currentGeoKey
 
 	//url for a location in Canada that lists json data slightly differently
 	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
@@ -174,7 +188,7 @@ func getCountry(lat, long string) string{
 			nextGeoKey()
 			getCountry(lat, long)
 		case "ZERO_RESULTS":
-			results.Country = "Country information available - location likely in the ocean"
+			results.Country = "Country information unavailable - location likely in the ocean"
 		default:
 			//country := results.Results[0].AddressComponents[len(results.Results[0].AddressComponents)-1].LongName
 			country := ""
@@ -189,6 +203,26 @@ func getCountry(lat, long string) string{
 	}
 	return results.Country
 
+}
+
+func getTimeZone(lat, long string, unixTime int) (string, int){
+	timestamp := strconv.Itoa(unixTime)
+	url := "https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
+	timezone := TimeZoneFinder{}
+	err := json.Unmarshal(getJson(url), &timezone)
+	if err != nil {
+		log.Fatal("Unmarshal error: ", err)
+	}
+
+
+	switch timezone.Status {
+	case "OVER_QUERY_LIMIT":
+		nextGeoKey()
+		getTimeZone(lat, long, unixTime)
+	case "ZERO_RESULTS":
+		timezone.TimeZoneName = "Timezone not found"
+	}
+	return timezone.TimeZoneName, timezone.RawOffset
 }
 
 //moves on to next key for finding country, if available
@@ -216,76 +250,84 @@ func renderTemplate(w http.ResponseWriter, page *issData) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//if !invalidData {
+	if !invalidData {
 		t.Execute(w, page)
-	//} else {
-	//	fmt.Fprintln(w, "404: Some or all data were nil. Sorry!")
-	//}
+	} else {
+		fmt.Fprintln(w, "404: Some or all data were nil. Sorry!")
+	}
 }
 
-
-func CountingTimeThing() ([]string, []int, []int){
+func timeSinceLaunch() ([]string, []int, []int){
 	names := []string{"Scott Tingle", "Anton Skhaplerov", "Norishige Kanai", "Andrew Feustel", "Richard Arnold", "Oleg Martemyev"}
-	batch1 := time.Date(2017, time.December, 17, 7, 21, 0, 0, time.UTC)
-	batch2 := time.Date(2018, time.March, 21, 17, 44, 0, 0, time.UTC)
-	//time1 := int(time.Now().Sub(batch1).Hours()/24)
-	time1 := int(math.Floor(float64(time.Now().Sub(batch1).Hours()/24)))
-	hours1 := int(math.Floor(float64(time.Now().Sub(batch1).Hours()))) % 24
-	time2 := int(math.Floor(time.Now().Sub(batch2).Hours()/24))
-	hours2 := int(math.Floor(float64(time.Now().Sub(batch2).Hours()))) % 24
-	days := []int{time1, time2}
-	hours := []int{hours1, hours2}
 
-	ticker0 := time.Tick(time.Second*5)
-	time.Sleep(time.Millisecond*50)
+	//Sets types Time at entered dates, which corresponds to the launch dates
+	//source for dates: https://www.worldspaceflight.com/bios/currentlyinspace.php
+	launchA := time.Date(2017, time.December, 17, 7, 21, 0, 0, time.UTC)
+	launchB := time.Date(2018, time.March, 21, 17, 44, 0, 0, time.UTC)
 
-	ticker1 := time.Tick(time.Second*5)
-	time.Sleep(time.Millisecond*50)
+	//time since launches in hours
+	timeSinceA := time.Now().Sub(launchA).Hours()
+	timeSinceB := time.Now().Sub(launchB).Hours()
 
-	ticker2 := time.Tick(time.Second*5)
-	time.Sleep(time.Millisecond*50)
 
-	ticker3 := time.Tick(time.Second*5)
-	time.Sleep(time.Millisecond*50)
+	//hours since launch (type float64) divided by 24 to get days, then floors the number and convert to type int
+	daysA := int(math.Floor(timeSinceA/24))
+	daysB := int(math.Floor(timeSinceB/24))
 
-	ticker4 := time.Tick(time.Second*5)
-	time.Sleep(time.Millisecond*50)
+	//same as above, but '% 24' takes the remainder after dividing by 24
+	hoursA := int(math.Floor(timeSinceA)) % 24
+	hoursB := int(math.Floor(timeSinceB)) % 24
 
-	ticker5 := time.Tick(time.Second*5)
-	time.Sleep(time.Millisecond*50)
+	//slices to be returned
+	days := []int{daysA, daysB}
+	hours := []int{hoursA, hoursB}
 
-	if false {
+	ticker0 := makeTicker()
+	ticker1 := makeTicker()
+	ticker2 := makeTicker()
+	ticker3 := makeTicker()
+	ticker4 := makeTicker()
+	ticker5 := makeTicker()
+
+	tickers := []<-chan time.Time{ticker0}
+	//false to prevent it from running (instead of putting code in a comment)
+	if true {
 			for {
 				select {
+				case <-tickers[0]:
+					t := time.Now()
+					elapsed := t.Sub(launchA)
+					fmt.Printf("%s has been in space for %.0f days \n", names[0], elapsed.Hours()/24)
+				/*
 				case <-ticker0:
 					t := time.Now()
-					elapsed := t.Sub(batch1)
-					fmt.Printf("Scott Tingle has been in space %.0f days\n", elapsed.Hours()/24)
+					elapsed := t.Sub(launchA)
+					fmt.Printf("%s has been in space %.0f days\n", names[0], elapsed.Hours()/24)*/
 
 				case <-ticker1:
 					t := time.Now()
-					elapsed := t.Sub(batch1)
-					fmt.Printf("Anton Skhaplerov has been in space %.0f days\n", elapsed.Hours()/24)
+					elapsed := t.Sub(launchA)
+					fmt.Printf("%s has been in space %.0f days\n", names[1], elapsed.Hours()/24)
 
 				case <-ticker2:
 					t := time.Now()
-					elapsed := t.Sub(batch1)
-					fmt.Printf("Norishige Kanai has been in space %.0f days\n", elapsed.Hours()/24)
+					elapsed := t.Sub(launchA)
+					fmt.Printf("%s has been in space %.0f days\n", names[2], elapsed.Hours()/24)
 
 				case <-ticker3:
 					t := time.Now()
-					elapsed := t.Sub(batch2)
-					fmt.Printf("Andrew Feustel has been in space %.0f days\n", elapsed.Hours()/24)
+					elapsed := t.Sub(launchB)
+					fmt.Printf("%s has been in space %.0f days\n", names[3], elapsed.Hours()/24)
 
 				case <-ticker4:
 					t := time.Now()
-					elapsed := t.Sub(batch2)
-					fmt.Printf("Richard Arnold has been in space %.0f days\n", elapsed.Hours()/24)
+					elapsed := t.Sub(launchB)
+					fmt.Printf("%s has been in space %.0f days\n", names[4], elapsed.Hours()/24)
 
 				case <-ticker5:
 					t := time.Now()
-					elapsed := t.Sub(batch2)
-					fmt.Printf("Oleg Martemyev has been in space %.0f days\n", elapsed.Hours()/24)
+					elapsed := t.Sub(launchB)
+					fmt.Printf("%s has been in space %.0f days\n", names[5], elapsed.Hours()/24)
 
 				}
 			}
@@ -293,9 +335,15 @@ func CountingTimeThing() ([]string, []int, []int){
 	return names, days, hours
 }
 
+func makeTicker() <-chan time.Time{
+	time.Sleep(time.Millisecond*50)
+	ticker := time.Tick(time.Second*5)
+	return ticker
+}
+
 //main page
 func Page(w http.ResponseWriter, r *http.Request) {
-	//for {
+	for {
 		renderTemplate(w, formatJson())
 		//checkForErrors(w, "http://127.0.0.1:8080/")
 		time.Sleep(time.Second * time.Duration(updateFrequency))
@@ -304,7 +352,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
 		*/
 		//time.Sleep(time.Millisecond * 1000)
-	//}
+	}
 }
 
 //page where css file is hosted (used by template in main page)
