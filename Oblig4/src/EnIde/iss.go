@@ -24,6 +24,7 @@ type issData struct {
 	UnixTime        int    `json:"timestamp"`
 	UserTime        time.Time
 	LocalTime		time.Time
+	LocalTimeMsg	string
 	Country         string
 	UpdateFrequency int
 	Name0           string
@@ -81,6 +82,9 @@ var updateFrequency = 10
 
 var invalidData bool
 
+//var outside recursive function to prevent it from resetting infinitely
+var attemptedUnmarshals = 0
+
 func main () {
 	//overloadCountryFinder("AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw")
 	invalidData = false
@@ -133,9 +137,6 @@ func getJson(url string) []byte {
 	return body
 }
 
-
-var attemptedUnmarshals = 0
-
 //unmarshals and formats json
 func formatJson() *issData {
 	iss := issData{}
@@ -149,15 +150,35 @@ func formatJson() *issData {
 		invalidData = true
 	}
 
+	//country information
 	iss.Country = getCountry(iss.Pos.Latitude, iss.Pos.Longitude)
+
+	//how often the page updates
 	iss.UpdateFrequency = updateFrequency
+
+	//time astronauts have been in space
 	names, days, hours := timeSinceLaunch()
 	iss.Name0, iss.Name1, iss.Name2, iss.Name3, iss.Name4, iss.Name5 = names[0], names[1], names[2], names[3], names[4], names[5]
 	iss.DayA, iss.DayB = days[0], days[1]
 	iss.HourA, iss.HourB = hours[0], hours[1]
+
+	//timestamp at user location
 	iss.UserTime = time.Unix(int64(iss.UnixTime), 0)
 
-	//timezone here
+	//timezone and local time
+	timezone, unixOffsett := getTimeZone(iss.Pos.Latitude, iss.Pos.Longitude, iss.UnixTime)
+	iss.TimeZone = timezone
+	localtime := iss.UnixTime + unixOffsett
+	iss.LocalTime = time.Unix(int64(localtime), 0)
+	if unixOffsett != 0 {
+		iss.LocalTimeMsg = "Timestamp (local timezone): " + iss.LocalTime.String()
+	} else {
+		if timezone != "" {
+			iss.LocalTimeMsg = "Timestamp (local timezone): " + iss.LocalTime.String()
+		} else {
+			iss.LocalTimeMsg = ""
+		}
+	}
 
 	//attempts the function again 10 times if data collection was unsuccessful
 	if iss.Message != "success" && attemptedUnmarshals < 10 {
@@ -172,6 +193,7 @@ func formatJson() *issData {
 	return &iss
 }
 
+//returns the country at lat, long
 func getCountry(lat, long string) string{
 	results := CountryFinder{}
 	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+currentGeoKey
@@ -205,6 +227,7 @@ func getCountry(lat, long string) string{
 
 }
 
+//returns timezone and offsett from unixtime (in seconds)
 func getTimeZone(lat, long string, unixTime int) (string, int){
 	timestamp := strconv.Itoa(unixTime)
 	url := "https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
@@ -291,7 +314,7 @@ func timeSinceLaunch() ([]string, []int, []int){
 
 	tickers := []<-chan time.Time{ticker0}
 	//false to prevent it from running (instead of putting code in a comment)
-	if true {
+	if false {
 			for {
 				select {
 				case <-tickers[0]:
@@ -347,11 +370,11 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		renderTemplate(w, formatJson())
 		//checkForErrors(w, "http://127.0.0.1:8080/")
 		time.Sleep(time.Second * time.Duration(updateFrequency))
-		//http.ServeFile(w, r, "empty.html")
+		http.ServeFile(w, r, "empty.html")
 		/* Alternatively:
 		fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
 		*/
-		//time.Sleep(time.Millisecond * 1000)
+		time.Sleep(time.Millisecond * 50)
 	}
 }
 

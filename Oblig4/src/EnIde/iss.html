@@ -2,28 +2,39 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="css">
+    <link rel="icon" href="https://cdn3.iconfinder.com/data/icons/unigrid-phantom-vehicles-vol-3/60/001_108_iss_satellite_sputnik_gps_glonass_solar_panels_space_mks-128.png">
 </head>
 <body id="body">
-    <p id="unixtime" value="{{.UnixTime}}">Unix Timestamp: {{.UnixTime}}</p>
-    <p id="utctime" value="{{.UserTime}}">Timestamp (your timezone): {{.UserTime}}</p>
-    <p id="latitude" value="{{.Pos.Latitude}}">Latitude: {{.Pos.Latitude}}</p>
-    <p id="longitude" value="{{.Pos.Longitude}}">Longitude: {{.Pos.Longitude}}</p>
-    <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
-    <br>
-    <p>Current astronaut aboard ISS</p>
-    <p class="astro">{{.Name0}}: {{.DayA}} Days, {{.HourA}} hours</p>
-    <p id="astro">{{.Name1}}: {{.DayA}} Days, {{.HourA}} hours</p>
-    <p>{{.Name2}}: {{.DayA}} Days, {{.HourA}} hours</p>
-    <p>{{.Name3}}: {{.DayB}} Days, {{.HourB}} hours</p>
-    <p>{{.Name4}}: {{.DayB}} Days, {{.HourB}} hours</p>
-    <p>{{.Name5}}: {{.DayB}} Days, {{.HourB}} hours</p>
-    <h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>
-    <iframe
-            width="600"
-            height="450"
-            frameborder="0" style="border:0"
-            id="map"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q={{.Pos.Latitude}}+{{.Pos.Longitude}}&zoom=1.9" allowfullscreen>
-    </iframe>
+    <div>
+        <div id="info-box">
+            <p id="unixtime" value="{{.UnixTime}}">Unix Timestamp: {{.UnixTime}}</p>
+            <p id="usertime" value="{{.UserTime}}">Timestamp (your timezone): {{.UserTime}}</p>
+            <p id="timezone" value="{{.TimeZone}}">Timezone: {{.TimeZone}}</p>
+            <p id="localtime" value="{{.LocalTime}}">{{.LocalTimeMsg}}</p>
+            <p id="latitude" value="{{.Pos.Latitude}}">Latitude: {{.Pos.Latitude}}</p>
+            <p id="longitude" value="{{.Pos.Longitude}}">Longitude: {{.Pos.Longitude}}</p>
+            <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
+        </div>
+        <br>
+        <div id="astro-box">
+            <p>Current astronaut aboard ISS</p>
+            <p class="astronaut">{{.Name0}}: {{.DayA}} Days, {{.HourA}} hours</p>
+            <p id="astro">{{.Name1}}: {{.DayA}} Days, {{.HourA}} hours</p>
+            <p>{{.Name2}}: {{.DayA}} Days, {{.HourA}} hours</p>
+            <p>{{.Name3}}: {{.DayB}} Days, {{.HourB}} hours</p>
+            <p>{{.Name4}}: {{.DayB}} Days, {{.HourB}} hours</p>
+            <p>{{.Name5}}: {{.DayB}} Days, {{.HourB}} hours</p>
+        </div>
+        <div id="map-box">
+            <h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>
+            <iframe
+                    width="600"
+                    height="450"
+                    frameborder="0" style="border:0"
+                    id="map"
+                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI&q={{.Pos.Latitude}}+{{.Pos.Longitude}}&zoom=1.9" allowfullscreen>
+            </iframe>
+        </div>
+    </div>
 </body>
 </html>
