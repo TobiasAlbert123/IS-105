@@ -10,6 +10,8 @@ To do list:
   - ISS Speed fra posisjonoppdateringer
   - Trykk for embedded reisevei
   - Link med bilde / wiki til astronauter, evt. embedded?
+  - Tidssone med klokkeslett på posisjon
+  - Høydeforskjell på posisjon
 
 
 
