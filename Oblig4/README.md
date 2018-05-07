@@ -3,8 +3,7 @@ To do list:
   - Systemspesifikasjon  
   - CSS styling  
     - Embedded kart til høyre
-  - Evt photoshop  
-  - Timestamp: Unix til vanlig tid  
+  - Evt photoshop
   - Flere backup API keys til reverse geocoding
   - Enhetstester (f.eks. på api-linker)
   - ISS Speed fra posisjonoppdateringer
@@ -21,5 +20,5 @@ Contributions:
 - (Espen) To do list
 - (Tobias) ISS posisjon API implementasjon
 - (Tobias) Google Maps embed med nåverende posisjon
-- (Tobias) Google reverse geocoding api for å finne nåverende land
+- (Tobias) Google API for land, tidssone i posisjon
 - (Tobias) Html template

@@ -19,6 +19,7 @@
             <p id="latitude" value="{{.Pos.Latitude}}" onclick="wikipedia(id.valueOf())">Latitude: {{.Pos.Latitude}}</p>
             <p id="longitude" value="{{.Pos.Longitude}}" onclick="wikipedia('longitude')">Longitude: {{.Pos.Longitude}}</p>
             <p id="currentcountry" value="{{.Country}}">Country: {{.Country}}</p>
+            <p id="elevation" value="{{.Elevation}}">{{.ElevationMessage}}</p>
         </div>
         <div id="map-box">
             <h2>Map (updates every {{.UpdateFrequency}} seconds):</h2>

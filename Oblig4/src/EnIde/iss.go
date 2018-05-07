@@ -46,7 +46,8 @@ type issData struct {
 	HourA           int
 	HourB           int
 	TimeZone		string
-
+	Elevation		int
+	ElevationMessage	string
 }
 
 //struct for the Google Reverse Geocoding API
@@ -60,6 +61,7 @@ type CountryFinder struct {
 	}
 	Status	string	`json:"status"`
 	Country	string
+	ErrorMessage	string	`json:"error_message"`
 }
 
 type TimeZoneFinder struct {
@@ -68,18 +70,33 @@ type TimeZoneFinder struct {
 	Status       string `json:"status"`
 	TimeZoneID   string `json:"timeZoneId"`
 	TimeZoneName string `json:"timeZoneName"`
+	ErrorMessage	string	`json:"error_message"`
 }
 
+type ElevationFinder struct {
+	Results []struct {
+		Elevation float64 `json:"elevation"`
+		Location  struct {
+			Lat float64 `json:"lat"`
+			Lng float64 `json:"lng"`
+		} `json:"location"`
+		Resolution float64 `json:"resolution"`
+	} `json:"results"`
+	Status string `json:"status"`
+	ErrorMessage	string	`json:"error_message"`
+}
+
+
 //not needed as var, but need to store it somewhere
-//API Key for Google Maps Embed
+//API Key for Google Maps Embed, limited at something like 2 million requests per day
 var apiKey = "AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI"
 
 //these are API Keys for reverse geocoding, timezones and elevation
+//limited at 2500 requests per day per key
 var geoKey = "AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
 var geoKey2 = "AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw"
 var geoKey3 = "AIzaSyC-eVqkAILczjX3KpepxwR2cAyXgaEvb8c"
-var geoKey4 = "AIzaSyDgGyEYCnYDCWCtODdiM-DSnuUTcN2XKCo"
-var geoKey5 = ""
+var geoKey4 = "AIzaSyBSsIw_sA9wGy-ptDdUZ8pxI5elu9azujs"
 var sliceOfGeoKeys = []string{geoKey, geoKey2, geoKey3, geoKey4}
 
 var geoKeysUsed = 0
@@ -95,6 +112,8 @@ var attemptedUnmarshals = 0
 
 //gets json from url
 func getJson(url string) []byte {
+
+	//Don't know if this would be better than the actual code
 /*
 	client := http.Client{
 		Timeout: time.Second *10,
@@ -149,12 +168,9 @@ func formatJson() *issData {
 
 	//timezone and local time
 	timezone, unixOffset := getTimeZone(iss.Pos.Latitude, iss.Pos.Longitude, iss.UnixTime)
-
-
 	iss.TimeZone = timezone
 	localtime := iss.UnixTime + unixOffset
 	iss.LocalTime = time.Unix(int64(localtime), 0)
-
 
 	if timezone != "Timezone not found" && timezone != "Denied access, use https"{
 		iss.LocalTimeMsg = "Timestamp (local timezone): " + iss.LocalTime.String()
@@ -162,10 +178,19 @@ func formatJson() *issData {
 		iss.LocalTimeMsg = ""
 	}
 
+	//elevation and ocean depth
+	elevation := int(getElevation(iss.Pos.Latitude, iss.Pos.Longitude))
+
+	if elevation < 0 {
+		iss.ElevationMessage = "Ocean depth: " + strconv.Itoa(elevation)
+	} else {
+		iss.ElevationMessage = "Elevation: " + strconv.Itoa(elevation)
+	}
 
 	//attempts the function again 10 times if data collection was unsuccessful
 	if iss.Message != "success" && attemptedUnmarshals < 10 {
 		fmt.Println(iss.Message,len(iss.Message))
+		//global var to avoid it resetting when function restarts
 		attemptedUnmarshals++
 		if attemptedUnmarshals < 10 {
 			time.Sleep(time.Millisecond*5)
@@ -180,9 +205,7 @@ func formatJson() *issData {
 func getCountry(lat, long string) string{
 	results := CountryFinder{}
 	url := "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+long+"&key="+currentGeoKey
-
-	//url for a location in Canada that lists json data slightly differently
-	//url := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw"
+	//testurl := "https://maps.googleapis.com/maps/api/geocode/json?latlng=51.6204,-60.6336&key=AIzaSyCXfJONlkP8c1PM0ZBOJFBtFR7hRhapQQw"
 
 	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
@@ -194,7 +217,11 @@ func getCountry(lat, long string) string{
 			getCountry(lat, long)
 		case "ZERO_RESULTS":
 			results.Country = "Country information unavailable - location likely in the ocean"
-		default:
+		case "INVALID_REQUEST":
+			fmt.Println("Invalid request for geocoding")
+		case "REQUEST_DENIED":
+			fmt.Println(results.ErrorMessage)
+		case "OK":
 			//country := results.Results[0].AddressComponents[len(results.Results[0].AddressComponents)-1].LongName
 			country := ""
 			for i := 0; i < len(results.Results[0].AddressComponents); i++ {
@@ -205,6 +232,8 @@ func getCountry(lat, long string) string{
 				}
 			}
 			results.Country = country
+		default:
+			fmt.Println(results.Status)
 	}
 	return results.Country
 
@@ -221,7 +250,6 @@ func getTimeZone(lat, long string, unixTime int) (string, int){
 		log.Fatal("Unmarshal error: ", err)
 	}
 
-
 	switch timezone.Status {
 	case "OVER_QUERY_LIMIT":
 		nextGeoKey()
@@ -231,11 +259,39 @@ func getTimeZone(lat, long string, unixTime int) (string, int){
 	case "INVALID_REQUEST":
 		fmt.Println("invalid request for timezone")
 	case "REQUEST_DENIED":
-		timezone.TimeZoneName = "Denied access, use https"
+		fmt.Println(timezone.ErrorMessage)
 	default:
 		fmt.Println(timezone.Status, timezone.TimeZoneName)
 	}
 	return timezone.TimeZoneName, timezone.RawOffset
+}
+
+//returns elevation or ocean depth
+func getElevation(lat, long string) float64 {
+	url := "https://maps.googleapis.com/maps/api/elevation/json?locations="+lat+","+long+"&key="+currentGeoKey
+	//testurl := "https://maps.googleapis.com/maps/api/elevation/json?locations=-51.3502,64.5989&key=AIzaSyDgGyEYCnYDCWCtODdiM-DSnuUTcN2XKCo"
+
+	elevation := ElevationFinder{}
+	err := json.Unmarshal(getJson(url), &elevation)
+	if err != nil {
+		log.Fatal("Unmarshal error: ", err)
+	}
+
+	//fmt.Println(elevation.Results[0].Elevation)
+	switch elevation.Status {
+	case "OVER_QUERY_LIMIT":
+		nextGeoKey()
+		getElevation(lat, long)
+	case "ZERO_RESULTS":
+		elevation.Results[0].Elevation = 0
+	case "INVALID_REQUEST":
+		fmt.Println("invalid request for elevation")
+	case "REQUEST_DENIED":
+		fmt.Println(elevation.ErrorMessage)
+	default:
+		fmt.Println(elevation.Status)
+	}
+	return elevation.Results[0].Elevation
 }
 
 //moves on to next key for finding country, if available
@@ -248,6 +304,7 @@ func nextGeoKey() {
 	}
 }
 
+//checks if iss api is invalid
 func isEmpty(iss issData) bool {
 	//iss.UnixTime = 0
 	if iss.UnixTime == 0  || iss.Pos.Latitude == "" || iss.Pos.Longitude == "" {
@@ -255,7 +312,6 @@ func isEmpty(iss issData) bool {
 	}
 	return false
 }
-
 
 //renders template to client
 func renderTemplate(w http.ResponseWriter, page *issData) {

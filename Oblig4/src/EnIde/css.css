@@ -6,7 +6,6 @@ h2 {
     font-family: "Comic Sans MS";
 }
 
-
 #nav-bar {
     overflow: hidden;
     margin: 0 0 10px 0;
@@ -30,7 +29,8 @@ h2 {
 #astro-box {
     float: left;
     border: 2px black solid;
-    background: #337ab2;
+    /*background: #337ab2;*/
+    background: #232323
 }
 
 #astro-title {
@@ -54,9 +54,25 @@ h2 {
 
 #info-box {
     float: left;
+    overflow: hidden;
 }
-
 
 #map-box {
     float: right;
+}
+
+/*
+#map {
+    opacity: 1;
+    position: absolute;
+    left: 933px;
+    top: 79px;
+    width: 353px;
+    height: 334px;
+    z-index: 10;
+}
+*/
+
+#body {
+    background: #394b58;
 }
