@@ -22,6 +22,10 @@ func main () {
 	http.ListenAndServe(":8080", nil)
 }
 
+/*
+*STRUCTS
+ */
+
 //struct for issData Position API
 type issData struct {
 	Pos struct {
@@ -87,6 +91,10 @@ type ElevationFinder struct {
 }
 
 
+/*
+VARIABLES
+ */
+
 //not needed as var, but need to store it somewhere
 //API Key for Google Maps Embed, limited at something like 2 million requests per day
 var apiKey = "AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI"
@@ -103,12 +111,17 @@ var geoKeysUsed = 0
 
 var currentGeoKey = sliceOfGeoKeys[geoKeysUsed]
 
-var updateFrequency = 10
+//amount of seconds
+var updateFrequency = 30
 
 var invalidData bool
 
 //var outside recursive function to prevent it from resetting infinitely
 var attemptedUnmarshals = 0
+
+/*
+JSON HANDLING
+ */
 
 //gets json from url
 func getJson(url string) []byte {
@@ -167,12 +180,15 @@ func formatJson() *issData {
 	iss.UserTime = time.Unix(int64(iss.UnixTime), 0)
 
 	//timezone and local time
-	timezone, unixOffset := getTimeZone(iss.Pos.Latitude, iss.Pos.Longitude, iss.UnixTime)
+	timezone, id := getTimeZone(iss.Pos.Latitude, iss.Pos.Longitude, iss.UnixTime)
 	iss.TimeZone = timezone
-	localtime := iss.UnixTime + unixOffset
-	iss.LocalTime = time.Unix(int64(localtime), 0)
+	if id != "N/A" {
+		zone, _ := time.LoadLocation(id)
+		iss.LocalTime = iss.UserTime.In(zone)
+	}
 
-	if timezone != "Timezone not found" && timezone != "Denied access, use https"{
+	//checks that there is a timezone to print to page
+	if timezone != "N/A" {
 		iss.LocalTimeMsg = "Timestamp (local timezone): " + iss.LocalTime.String()
 	} else {
 		iss.LocalTimeMsg = ""
@@ -182,10 +198,11 @@ func formatJson() *issData {
 	elevation := int(getElevation(iss.Pos.Latitude, iss.Pos.Longitude))
 
 	if elevation < 0 {
-		iss.ElevationMessage = "Ocean depth: " + strconv.Itoa(elevation)
+		iss.ElevationMessage = "Ocean depth: "
 	} else {
-		iss.ElevationMessage = "Elevation: " + strconv.Itoa(elevation)
+		iss.ElevationMessage = "Elevation: "
 	}
+	iss.ElevationMessage += strconv.Itoa(elevation) + "m"
 
 	//attempts the function again 10 times if data collection was unsuccessful
 	if iss.Message != "success" && attemptedUnmarshals < 10 {
@@ -200,6 +217,10 @@ func formatJson() *issData {
 	}
 	return &iss
 }
+
+/*
+GOOGLE APIS
+ */
 
 //returns the country at lat, long
 func getCountry(lat, long string) string{
@@ -216,7 +237,7 @@ func getCountry(lat, long string) string{
 			nextGeoKey()
 			getCountry(lat, long)
 		case "ZERO_RESULTS":
-			results.Country = "Country information unavailable - location likely in the ocean"
+			results.Country = "N/A"
 		case "INVALID_REQUEST":
 			fmt.Println("Invalid request for geocoding")
 		case "REQUEST_DENIED":
@@ -233,16 +254,16 @@ func getCountry(lat, long string) string{
 			}
 			results.Country = country
 		default:
-			fmt.Println(results.Status)
+			fmt.Println("Country status: ", results.Status)
 	}
 	return results.Country
 
 }
 
 //returns timezone and offsett from unixtime (in seconds)
-func getTimeZone(lat, long string, unixTime int) (string, int){
+func getTimeZone(lat, long string, unixTime int) (string, string){
 	timestamp := strconv.Itoa(unixTime)
-	//testurl := "https://maps.googleapis.com/maps/api/timezone/json?location=-13.0417,69.2496&timestamp=1525377238&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
+	//testurl := "https://maps.googleapis.com/maps/api/timezone/json?location=41.634663,-111.189675&timestamp=1525377238&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
 	url := "https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
 	timezone := TimeZoneFinder{}
 	err := json.Unmarshal(getJson(url), &timezone)
@@ -255,15 +276,18 @@ func getTimeZone(lat, long string, unixTime int) (string, int){
 		nextGeoKey()
 		getTimeZone(lat, long, unixTime)
 	case "ZERO_RESULTS":
-		timezone.TimeZoneName = "Timezone not found"
+		timezone.TimeZoneName = "N/A"
+		timezone.TimeZoneID = "N/A"
 	case "INVALID_REQUEST":
 		fmt.Println("invalid request for timezone")
 	case "REQUEST_DENIED":
 		fmt.Println(timezone.ErrorMessage)
+	case "OK":
+		break
 	default:
-		fmt.Println(timezone.Status, timezone.TimeZoneName)
+		fmt.Println("Timezone status: ", timezone.Status, timezone.TimeZoneName)
 	}
-	return timezone.TimeZoneName, timezone.RawOffset
+	return timezone.TimeZoneName, timezone.TimeZoneID
 }
 
 //returns elevation or ocean depth
@@ -288,11 +312,17 @@ func getElevation(lat, long string) float64 {
 		fmt.Println("invalid request for elevation")
 	case "REQUEST_DENIED":
 		fmt.Println(elevation.ErrorMessage)
+	case "OK":
+		break
 	default:
-		fmt.Println(elevation.Status)
+		fmt.Println("Elevation status", elevation.Status)
 	}
 	return elevation.Results[0].Elevation
 }
+
+/*
+OTHER FUNCTIONS
+ */
 
 //moves on to next key for finding country, if available
 func nextGeoKey() {
@@ -335,9 +365,8 @@ func timeSinceLaunch() ([]string, []int, []int){
 	launchB := time.Date(2018, time.March, 21, 17, 44, 0, 0, time.UTC)
 
 	//time since launches in hours
-	timeSinceA := time.Now().Sub(launchA).Hours()
-	timeSinceB := time.Now().Sub(launchB).Hours()
-
+	timeSinceA := time.Since(launchA).Hours()
+	timeSinceB := time.Since(launchB).Hours()
 
 	//hours since launch (type float64) divided by 24 to get days, then floors the number and convert to type int
 	daysA := int(math.Floor(timeSinceA/24))
@@ -410,6 +439,10 @@ func makeTicker() <-chan time.Time{
 	return ticker
 }
 
+/*
+PAGES
+ */
+
 //main page
 func Page(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, formatJson())
@@ -432,7 +465,7 @@ func CssPage(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
-*Functions not in use below
+*UNUSED FUNCTIONS
  */
 
 //used to find error messages when api key usage has been exceeded
