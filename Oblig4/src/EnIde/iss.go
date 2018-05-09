@@ -357,7 +357,7 @@ func renderTemplate(w http.ResponseWriter, page *issData) {
 }
 
 func timeSinceLaunch() ([]string, []int, []int){
-	names := []string{"Scott Tingle", "Anton Skhaplerov", "Norishige Kanai", "Andrew Feustel", "Richard Arnold", "Oleg Martemyev"}
+	names := []string{"Scott Tingle", "Anton Shkaplerov", "Norishige Kanai", "Andrew Feustel", "Richard R. Arnold", "Oleg Artemyev"}
 
 	//Sets types Time at entered dates, which corresponds to the launch dates
 	//source for dates: https://www.worldspaceflight.com/bios/currentlyinspace.php

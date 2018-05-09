@@ -33,40 +33,6 @@ body {
     color: #232323;
 }
 
-#astro-box {
-    float: left;
-    border: 2px black solid;
-    border-radius: 5px;
-    background: #232323;
-    max-width: 500px;
-}
-
-#astro-title {
-    color: darkorange;
-    font-size: 1.5em;
-    font-weight: bold;
-    text-align: center;
-    overflow: auto;
-}
-
-.astronaut {
-    background-color: #232323;
-    color: #ccc;
-    margin: 5px;
-    padding: 5px;
-}
-
-.astronaut:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-#astro-src {
-    color: inherit;
-    text-decoration: none;
-    font-size: 0.9em;
-}
-
 #boxes {
     text-align: center;
     background: #394b58;
@@ -88,6 +54,45 @@ body {
     float: right;
 }
 
+#astro-box {
+    float: left;
+    border: 2px black solid;
+    border-radius: 5px;
+    background: #232323;
+    max-width: 500px;
+}
+
+#astro-title {
+    color: darkorange;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    overflow: auto;
+}
+
+#astro-src {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.astronaut {
+    background-color: #232323;
+    color: #ccc;
+    margin: 5px;
+    padding: 5px;
+}
+
+.astronaut:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#astro-src:hover {
+    text-decoration: underline;
+}
+
+
 #na {
     font-size: 0.9em;
 }
@@ -98,4 +103,17 @@ body {
     width: 90%;
     height: 3px;
     border-radius: 5px;
+}
+
+@media only screen and (max-width: 1133px), only screen and (max-height: 790px) {
+   #boxes {
+       overflow: auto;
+       height: 92vh;
+    }
+
+    #boxes div {
+        margin: auto;
+        float: none;
+        text-align: center;
+    }
 }

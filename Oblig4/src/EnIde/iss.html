@@ -51,7 +51,7 @@
         {{.Name3}}: {{.DayB}} Days, {{.HourB}} hours
         </p>
         <div class="line"></div>
-        <p class="astronaut" id="{{.Name4}}" onclick="wikipedia(id.valueOf())">
+        <p class="astronaut" title="lol" id="{{.Name4}}" onclick="wikipedia(id.valueOf())">
         {{.Name4}}: {{.DayB}} Days, {{.HourB}} hours
         </p>
         <div class="line"></div>
@@ -60,10 +60,19 @@
         </p>
     </div>
 </div>
-<script>/*
-        function wikipedia(input) {
-            window.open('https://en.wikipedia.org/wiki/'+input, '_blank')
-        }*/
+<script>
+    function wikipedia(input) {
+        window.open('https://en.wikipedia.org/wiki/'+input, '_blank')
+    }
+
+    var box = document.getElementById('astro-box')
+    function stuff() {
+        for (i = 0; i < box.childElementCount; i++)
+            if (box.children.item(i).className == 'astronaut') {
+                box.children.item(i).setAttribute('title', 'Wikipedia: ' + box.children.item(i).id)
+            }
+    }
+    stuff()
 </script>
 </body>
 </html>
