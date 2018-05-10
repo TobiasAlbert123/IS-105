@@ -4,8 +4,8 @@ I denne oppgaven har vi hatt litt friere tøyler enn fra de tidligere oppgavene.
 
 ## Systemarkitektur
 
-Vårt systems hovedfunksjon er å vise plasseringen til ISS(The International Space Station), ved hjelp av en API som gir oss altitude,
-longitude og timestamp. http://api.open-notify.org/iss-now.json    
+Vårt systems hovedfunksjon er å vise plasseringen til ISS(The International Space Station), ved hjelp av en API som gir oss latitude,
+longitude, elevation og timestamp. http://api.open-notify.org/iss-now.json     
 Applikasjonen vi har utviklet er en Single-page applikasjon. Den har ingen user-input og self oppdaterer hvert 15. sekund.   
 //Mer konkret er applikasjonen en Thin Server Architecture.  
 I vår applikasjon bruker vi Go, HTML og CSS sammen til å gi oss resultatet vi ønsker.  
