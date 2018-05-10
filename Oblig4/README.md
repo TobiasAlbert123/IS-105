@@ -1,8 +1,7 @@
 To do list:  
   - Systemarkitektur  
   - Systemspesifikasjon  
-  - CSS styling  
-    - Embedded kart til høyre
+  - Finere farger
   - Flere backup API keys til reverse geocoding
   - Enhetstester (f.eks. på api-linker)
   - ISS Speed fra posisjonoppdateringer
