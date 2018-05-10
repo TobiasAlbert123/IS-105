@@ -14,11 +14,8 @@ import (
 	"strconv"
 )
 
-func main() {
-	RunServer()
-}
 
-func RunServer() {
+func main() {
 	invalidData = false
 	http.HandleFunc("/", Page)
 	http.HandleFunc("/css", CssPage)
@@ -26,12 +23,11 @@ func RunServer() {
 	http.ListenAndServe(":8080", nil)
 }
 
-func RunForTest() (int, []string){
-	go RunServer()
+func RunForTest() {
+	go main()
 	time.Sleep(time.Second*10)
 	open("http://localhost:8080/")
 	time.Sleep(time.Second*5)
-	return GeoKeysUsed, SliceOfGeoKeys
 }
 
 /*
@@ -130,6 +126,10 @@ var invalidData bool
 //var outside recursive function to prevent it from resetting infinitely
 var attemptedUnmarshals = 0
 
+var varLat = ""
+
+var varLong = ""
+
 /*
 JSON HANDLING
  */
@@ -179,8 +179,7 @@ func formatJson() *issData {
 	//printJson(iss)
 	if isEmpty(iss) {
 		invalidData = true
-	}
-
+}
 	//country information
 	iss.Country = getCountry(iss.Pos.Latitude, iss.Pos.Longitude)
 
@@ -223,11 +222,11 @@ func formatJson() *issData {
 
 	//attempts the function again 10 times if data collection was unsuccessful
 	if iss.Message != "success" && attemptedUnmarshals < 10 {
-		fmt.Println(iss.Message,len(iss.Message))
+		fmt.Println(iss.Message, len(iss.Message))
 		//global var to avoid it resetting when function restarts
 		attemptedUnmarshals++
 		if attemptedUnmarshals < 10 {
-			time.Sleep(time.Millisecond*5)
+			time.Sleep(time.Millisecond * 5)
 			formatJson()
 		}
 		log.Fatalf("%d attemps at collecting ISS API data were unsuccessful. Ensure url (%s) is correct", attemptedUnmarshals, url)
@@ -460,15 +459,12 @@ func makeTicker() <-chan time.Time{
 PAGES
  */
 
-//RunServer page
+//main page
 func Page(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, formatJson())
 	fmt.Printf("Using API Key #%d\n", GeoKeysUsed+1)
 	time.Sleep(time.Second * time.Duration(updateFrequency))
 	http.ServeFile(w, r, "empty.html")
-	/* Alternatively:
-	fmt.Fprintln(w, "<script>document.getElementById('body').innerHTML = '';</script>")
-	*/
 	Page(w, r)
 }
 

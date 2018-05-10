@@ -2,24 +2,23 @@ package main
 
 import (
 	"testing"
-	"fmt"
 )
 
 func TestRunAndOpen(t *testing.T) {
-	keysUsed, keys := RunForTest()
-	fmt.Println(keysUsed, len(keys))
-	if outOfAPIKeys(keysUsed, keys) {
+	RunForTest()
+	if outOfAPIKeys(GeoKeysUsed, len(SliceOfGeoKeys)) {
 		t.Fail()
 	}
+	//this var is set to true during 'formatJson()' if something is wrong with ISS API data
 	if invalidData {
 		t.Fail()
 	}
 }
 
-func outOfAPIKeys(keysUsed int, keys []string) bool{
-	if keysUsed >= len(keys) {
+//checks if all API keys have been used, rendering the application useless
+func outOfAPIKeys(used, available int) bool{
+	if used >= available {
 		return true
 	}
-
 	return false
 }
