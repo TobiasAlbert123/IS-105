@@ -2,7 +2,7 @@ oblig_4
 
 I denne oppgaven har vi hatt litt friere tøyler enn fra de tidligere oppgavene. Her skulle vi lage en web applikasjon som blir hostet på en lokal server og skal gi useren nyttig informasjon om f.eks vær som vi selv kunne velge. Etter endel research og forslag kom vi fram til at vi skulle bruke en ISS plassering API.
 
-##Systemarkitektur
+## Systemarkitektur
 
 Vårt systems hovedfunksjon er å vise plasseringen til ISS(The International Space Station), ved hjelp av en API som gir oss altitude,
 longitude og timestamp.  
