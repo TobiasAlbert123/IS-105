@@ -43,10 +43,18 @@ body {
     margin: auto;
 }
 
+#title {
+    margin: 0 auto;
+}
+
 #info-box {
     float: left;
     overflow: hidden;
     text-align: left;
+}
+
+#na {
+    font-size: 0.9em;
 }
 
 #map-box {
@@ -63,6 +71,7 @@ body {
 }
 
 #astro-title {
+    margin: 0 auto;
     color: darkorange;
     font-size: 1.5em;
     font-weight: bold;
@@ -93,9 +102,6 @@ body {
 }
 
 
-#na {
-    font-size: 0.9em;
-}
 
 .line {
     margin:auto;
@@ -105,7 +111,12 @@ body {
     border-radius: 5px;
 }
 
-@media only screen and (max-width: 1133px), only screen and (max-height: 790px) {
+
+
+/*
+Semi-responsive design
+ */
+@media only screen and (max-width: 1133px), only screen and (max-height: 730px) {
    #boxes {
        overflow: auto;
        height: 92vh;
