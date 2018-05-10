@@ -13,3 +13,8 @@ Vi bruker Go hovedsakelig til å handle json API--->
 For å finne elapsed time til de ulike astronautene bruker vi time.Date func i time packagen. Det som er nyttig med denne funksjonen er at man kan oppgi en start date fra når tickeren skal begynne fram til present time. Dette vil alltid gi oss en oppdatert tid ettersom vi har satt start tiden til deres respektive oppskytning.   
 HTML--->  
 CSS--->  
+
+
+## Enhetstester  
+
+Siden applikasjonen ikke inneholder noen user input, er det vanskelig å lage gode tester. Testene vi har laget sjekker at APIen til ISS var brukbar (resten av programmet baserer seg på den), og om det er nok API-nøkler til å bruke de ulike Google API-tjenestene. Ellers er det brukt mye defensiv programmering i koden. Hver gang en API blir hentet blir `status` sjekket, og om den ikke er lik `OK`, vil programmet ikke prøve å bruke data som ikke eksisterer, men heller produsere sin egen (for eksempel: "Country: N/A").
