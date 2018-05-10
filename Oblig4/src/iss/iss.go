@@ -102,7 +102,6 @@ type ElevationFinder struct {
 	ErrorMessage	string	`json:"error_message"`
 }
 
-
 /*
 VARIABLES
  */
@@ -157,9 +156,15 @@ func getJson(url string) []byte {
 		fmt.Println(err)
 	}
 */
-	a, _ := http.Get(url)
-	body, _ := ioutil.ReadAll(a.Body)
 
+	a, err := http.Get(url)
+	if err != nil {
+		log.Fatal("Error at http.Get")
+	}
+	body, err := ioutil.ReadAll(a.Body)
+	if err != nil {
+		log.Fatal("Error at ioutil.Readall")
+	}
 	return body
 }
 
