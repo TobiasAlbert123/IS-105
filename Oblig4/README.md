@@ -6,6 +6,8 @@ I denne oppgaven har vi hatt litt friere tøyler enn fra de tidligere oppgavene.
 
 Hensikten med systemet vårt er å vise plasserings til ISS (The International Space Station), i tillegg til noen andre detaljer om romstasjonen. Vi får informasjon om hvem som er om bord og hva de heter, og hvis man trykker på navnet deres vil man bli tatt til deres Wikipedia-side. I tillegg til dette får vi informasjon om hvilket klokkeslett det er, hvilken tidssone romstasjonen befinner seg i, høyde, breddegrad og lengregrad, og havdybde (dersom det er noe hav under). For å få den mest oppdaterte informasjonen som er mulig, blir romstasjonens plassert oppdatert hvert trettiende sekund.
 
+Personer som vil ha størt nytte av dette systemet er romentusiaster, eller andre, som ønsker å vite hvor den internasjonale romstasjonen befinner seg til enhver tid, og hvem som befinner seg ombord.
+
 ## Systemarkitektur
 
 Vårt systems hovedfunksjon er å vise plasseringen til ISS(The International Space Station), ved hjelp av en API som gir oss latitude,
