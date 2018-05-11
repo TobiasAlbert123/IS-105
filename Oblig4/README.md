@@ -59,7 +59,15 @@ Kort oppsummert:
 Siden applikasjonen ikke inneholder noen user input, er det vanskelig å lage gode tester. Testene vi har laget sjekker at APIen til ISS var brukbar (resten av programmet baserer seg på den), og om det er nok API-nøkler til å bruke de ulike Google API-tjenestene. Ellers er det brukt mye defensiv programmering i koden. Hver gang en API blir hentet blir `status` sjekket, og om den ikke er lik `OK`, vil programmet ikke prøve å bruke data som ikke eksisterer, men heller produsere sin egen (for eksempel vil land bli manuelt angitt som "N/A", - her brukt som "Not available").  
 Det er også en test som sjekker om `globalError` har innhold, fordi den starter tom og innhold blir bare lagt til når en error forekommer. Programmet feiler og printer ut `globalError`. Det er verdt å merke at alle feilmeldingene som kommer, kommer mange ganger (rundt 9-10 ganger) fordi programmet er kodet til å prøve om igjen rundt 10 ganger.  
 
-Alle steder hvor en error blir initalisert i iss.go, har vi funksjonskall som `log.Fatal()`. Disse har blitt kommentert vekk. Med disse til stedet, fungerte ikke testene, ettersom programmet ble avsluttet før testene fikk noe data. Dette er på grunn av oppsettet til testen, som krever at hele serverprogrammet blir kjørt og at "localhost:8080/" blir accessed, før testen sjekker ulike variabler i programmet.
+Siden testen krever en manuell input (må akseptere at programmet kan kjøre gjennom brannmur), er det lagt inn noe delay (`time.Sleep`), slik at man har tid til dette når testen blir gjort.
+
+Alle steder hvor en error blir initalisert i iss.go, har vi funksjonskall som `log.Fatal()`. Disse har blitt kommentert vekk. Med disse til stedet, fungerte ikke testene, ettersom programmet ble avsluttet før testene fikk noe data. Dette er på grunn av oppsettet til testen, som krever at hele serverprogrammet blir kjørt og at "localhost:8080/" blir accessed, før testen sjekker ulike variabler i programmet.  
+
+Test ok:  
+![test-ok](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig4/images/test-ok.png)  
+
+Test fail:  
+![test-fail](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig4/images/test-fail.png)  
 
 ## Eksempelbilder:  
 
