@@ -393,59 +393,7 @@ func astronautInfo() ([]string, []int, []int){
 	//slices to be returned
 	days := []int{daysA, daysB}
 	hours := []int{hoursA, hoursB}
-
-	/*
-	ticker0 := makeTicker()
-	ticker1 := makeTicker()
-	ticker2 := makeTicker()
-	ticker3 := makeTicker()
-	ticker4 := makeTicker()
-	ticker5 := makeTicker()
-
-	tickers := []<-chan time.Time{ticker0}
-	//false to prevent it from running (instead of putting code in a comment)
-	if false {
-			for {
-				select {
-				case <-tickers[0]:
-					t := time.Now()
-					elapsed := t.Sub(launchA)
-					fmt.Printf("%s has been in space for %.0f days \n", names[0], elapsed.Hours()/24)
-
-				//case <-ticker0:
-				//	t := time.Now()
-				//	elapsed := t.Sub(launchA)
-				//	fmt.Printf("%s has been in space %.0f days\n", names[0], elapsed.Hours()/24)
-
-				case <-ticker1:
-				t := time.Now()
-				elapsed := t.Sub(launchA)
-				fmt.Printf("%s has been in space %.0f days\n", names[1], elapsed.Hours()/24)
-
-				case <-ticker2:
-				t := time.Now()
-				elapsed := t.Sub(launchA)
-				fmt.Printf("%s has been in space %.0f days\n", names[2], elapsed.Hours()/24)
-
-				case <-ticker3:
-				t := time.Now()
-				elapsed := t.Sub(launchB)
-				fmt.Printf("%s has been in space %.0f days\n", names[3], elapsed.Hours()/24)
-
-				case <-ticker4:
-				t := time.Now()
-				elapsed := t.Sub(launchB)
-				fmt.Printf("%s has been in space %.0f days\n", names[4], elapsed.Hours()/24)
-
-				case <-ticker5:
-				t := time.Now()
-				elapsed := t.Sub(launchB)
-				fmt.Printf("%s has been in space %.0f days\n", names[5], elapsed.Hours()/24)
-
-				}
-				}
-				}
-	 */
+	
 	return names, days, hours
 }
 
