@@ -10,11 +10,11 @@ func TestRunAndOpen(t *testing.T) {
 		t.Errorf(globalError)
 	}
 	if outOfAPIKeys(GeoKeysUsed, len(SliceOfGeoKeys)) {
-		t.Fail()
+		t.Error("Out of api keys\n")
 	}
 	//this var is set to true during 'formatJson()' if something is wrong with ISS API data
 	if invalidData {
-		t.Fail()
+		t.Error("The ISS API data was invalid")
 	}
 }
 
@@ -24,4 +24,19 @@ func outOfAPIKeys(used, available int) bool{
 		return true
 	}
 	return false
+}
+
+//tests if program can automatically move to next API Key
+func TestNextAPIKeyWorking(t *testing.T) {
+	keyToBeUsed := 0
+	for GeoKeysUsed == keyToBeUsed {
+		overloadCountryFinder(SliceOfGeoKeys[keyToBeUsed])
+	}
+	runForTest()
+	if GeoKeysUsed != keyToBeUsed +1 {
+		t.Error("Program did not use another key correctly")
+	}
+	if globalError != "" {
+		t.Error("lol")
+	}
 }
