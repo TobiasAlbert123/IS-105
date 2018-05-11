@@ -25,18 +25,3 @@ func outOfAPIKeys(used, available int) bool{
 	}
 	return false
 }
-
-//tests if program can automatically move to next API Key
-func TestNextAPIKeyWorking(t *testing.T) {
-	keyToBeUsed := 0
-	for GeoKeysUsed == keyToBeUsed {
-		overloadCountryFinder(SliceOfGeoKeys[keyToBeUsed])
-	}
-	runForTest()
-	if GeoKeysUsed != keyToBeUsed +1 {
-		t.Error("Program did not use another key correctly")
-	}
-	if globalError != "" {
-		t.Error("lol")
-	}
-}
