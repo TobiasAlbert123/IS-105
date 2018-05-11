@@ -4,6 +4,8 @@ I denne oppgaven har vi hatt litt friere tøyler enn fra de tidligere oppgavene.
 
 ### Disclaimers:  
 - Siden er delvis responsiv, og vil fungere i flere forskjellige størrelser. Likevel er ikke dette hovedfokuset på oppgaven, så vi kan ikke garantere at siden vil se bra ut på alle enheter. Se vedlagte bilder på tenkt design.
+- Margins mellom objekter på siden er ikke idéelle, men er et kompromiss for å få plass på siden.
+- I konsollen blir printet ut `http: multiple response.WriteHeader calls` gjentatte ganger. Dette skjer når javascriptet som blir skrevet til siden for å fjerne innholdet (før oppdatert info blir skrevet til siden) blir brukt. Har ikke klart å løse dette, men meldingen er bare en print og stopper ingen funksjon, og det er derfor ikke nødvendig å fjerne dette for at programmet skal kjøre.
 
 ## Systembeskrivelse
 
@@ -45,3 +47,9 @@ Alle steder hvor en error blir initalisert, har funksjonskall som `log.Fatal()` 
 
 I havet:  
 ![ocean-image](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig4/images/ocean-example.png)
+
+Når skjermen er for lav / tynn skiftes siden til å display slik:  
+Første halvdel av siden:  
+![ocean-image](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig4/images/other-view1.png)  
+Andre halvdel av siden:  
+![ocean-image](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig4/images/other-view2.png)

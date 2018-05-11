@@ -122,7 +122,7 @@ body {
 /*
 Semi-responsive design
  */
-@media only screen and (max-width: 1133px), only screen and (max-height: 650px) {
+@media only screen and (max-width: 1133px), only screen and (max-height: 600px) {
    #boxes {
        overflow: auto;
        height: 92vh;
