@@ -14,5 +14,5 @@ Contributions:
 - (Tobias) ISS posisjon API implementasjon
 - (Tobias) Google Maps embed med nåverende posisjon
 - (Tobias) Google API for land, tidssone og høydeforskjell på posisjon
-- (Tobias) Html template
+- (Tobias) Html page
 - (Benjamin) Systemspesifikasjon

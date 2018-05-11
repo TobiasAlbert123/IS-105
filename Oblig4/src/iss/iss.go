@@ -101,7 +101,7 @@ type ElevationFinder struct {
 VARIABLES
  */
 
-//not needed as var, but need to store it somewhere
+//not needed as a global var, but need to store it somewhere
 //API Key for Google Maps Embed, limited at something like 2 million requests per day
 var apiKey = "AIzaSyAx9uiZK2gNb3oNORe0-SLxO72f8-NYlaI"
 
@@ -120,6 +120,7 @@ var currentGeoKey = SliceOfGeoKeys[GeoKeysUsed]
 //amount of seconds
 var updateFrequency = 15
 
+//changed to true when the iss api is invalid
 var invalidData bool
 
 //var outside recursive function to prevent it from resetting infinitely
@@ -150,7 +151,7 @@ func getJson(url string) []byte {
 //unmarshals and formats json
 func formatJson() *issData {
 	iss := issData{}
-	url := "http://api.open-notify.org/iss-now.json"
+	url := "http://api.open-notify.org/iss-now.jso"
 	err := json.Unmarshal(getJson(url), &iss)
 	if err != nil {
 		globalError += "Error at json unmarshal\n"
