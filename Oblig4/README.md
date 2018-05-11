@@ -2,6 +2,10 @@
 
 I denne oppgaven har vi hatt litt friere tøyler enn fra de tidligere oppgavene. Her skulle vi lage en web applikasjon som blir hostet på en lokal server og skal gi useren nyttig informasjon om f.eks vær som vi selv kunne velge. Etter endel research og forslag kom vi fram til at vi skulle bruke en ISS plassering API.
 
+## Systembeskrivelse
+
+Hensikten med systemet vårt er å vise plasserings til ISS (The International Space Station). Vi får informasjon om hvem som er om bord og hva de heter, og hvis man trykker på navnet deres vil man bli tatt til deres Wikipedia-side. I tillegg til dette får vi informasjon om hvilket klokkeslett det er, hvilken tidssone romstasjonen befinner seg i, høyde, breddegrad og lengregrad, og havdybde (dersom det er noe hav under). 
+
 ## Systemarkitektur
 
 Vårt systems hovedfunksjon er å vise plasseringen til ISS(The International Space Station), ved hjelp av en API som gir oss latitude,
