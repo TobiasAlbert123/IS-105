@@ -66,7 +66,7 @@ Alle steder hvor en error blir initalisert i iss.go, har vi funksjonskall som `l
 Test ok:  
 ![test-ok](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig4/images/test-ok.png)  
 
-Test fail:  
+Test fail (api link broken med vilje):  
 ![test-fail](https://raw.githubusercontent.com/TobiasAlbert123/IS-105/master/Oblig4/images/test-fail.png)  
 
 ## Eksempelbilder:  
