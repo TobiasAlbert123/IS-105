@@ -125,6 +125,7 @@ var invalidData bool
 //var outside recursive function to prevent it from resetting infinitely
 var attemptedUnmarshals = 0
 
+//this is used during testing
 var globalError = ""
 
 /*
@@ -166,7 +167,7 @@ func formatJson() *issData {
 	iss.UpdateFrequency = updateFrequency
 
 	//time astronauts have been in space
-	names, days, hours := timeSinceLaunch()
+	names, days, hours := astronautInfo()
 	iss.Name0, iss.Name1, iss.Name2, iss.Name3, iss.Name4, iss.Name5 = names[0], names[1], names[2], names[3], names[4], names[5]
 	iss.DayA, iss.DayB = days[0], days[1]
 	iss.HourA, iss.HourB = hours[0], hours[1]
@@ -209,7 +210,7 @@ func formatJson() *issData {
 			formatJson()
 		}
 		//log.Fatalf("%d attemps at collecting ISS API data were unsuccessful. Ensure url (%s) is correct", attemptedUnmarshals, url)
-	} else if iss.Message == "" {
+	} else if iss.Message == "" { //needed when testing API link or program breaks for some reason
 		return &iss
 	}
 	return &iss
@@ -364,8 +365,9 @@ func renderTemplate(w http.ResponseWriter, page *issData) {
 	}
 }
 
-
-func timeSinceLaunch() ([]string, []int, []int){
+//returns the names of the astronauts and how long they've been in space
+func astronautInfo() ([]string, []int, []int){
+	//names of the astronauts at ISS
 	names := []string{"Scott Tingle", "Anton Shkaplerov", "Norishige Kanai", "Andrew Feustel", "Richard R. Arnold", "Oleg Artemyev"}
 
 	//Sets types Time at entered dates, which corresponds to the launch dates
@@ -389,6 +391,7 @@ func timeSinceLaunch() ([]string, []int, []int){
 	days := []int{daysA, daysB}
 	hours := []int{hoursA, hoursB}
 
+	/*
 	ticker0 := makeTicker()
 	ticker1 := makeTicker()
 	ticker2 := makeTicker()
@@ -405,47 +408,42 @@ func timeSinceLaunch() ([]string, []int, []int){
 					t := time.Now()
 					elapsed := t.Sub(launchA)
 					fmt.Printf("%s has been in space for %.0f days \n", names[0], elapsed.Hours()/24)
-				/*
-				case <-ticker0:
-					t := time.Now()
-					elapsed := t.Sub(launchA)
-					fmt.Printf("%s has been in space %.0f days\n", names[0], elapsed.Hours()/24)*/
+
+				//case <-ticker0:
+				//	t := time.Now()
+				//	elapsed := t.Sub(launchA)
+				//	fmt.Printf("%s has been in space %.0f days\n", names[0], elapsed.Hours()/24)
 
 				case <-ticker1:
-					t := time.Now()
-					elapsed := t.Sub(launchA)
-					fmt.Printf("%s has been in space %.0f days\n", names[1], elapsed.Hours()/24)
+				t := time.Now()
+				elapsed := t.Sub(launchA)
+				fmt.Printf("%s has been in space %.0f days\n", names[1], elapsed.Hours()/24)
 
 				case <-ticker2:
-					t := time.Now()
-					elapsed := t.Sub(launchA)
-					fmt.Printf("%s has been in space %.0f days\n", names[2], elapsed.Hours()/24)
+				t := time.Now()
+				elapsed := t.Sub(launchA)
+				fmt.Printf("%s has been in space %.0f days\n", names[2], elapsed.Hours()/24)
 
 				case <-ticker3:
-					t := time.Now()
-					elapsed := t.Sub(launchB)
-					fmt.Printf("%s has been in space %.0f days\n", names[3], elapsed.Hours()/24)
+				t := time.Now()
+				elapsed := t.Sub(launchB)
+				fmt.Printf("%s has been in space %.0f days\n", names[3], elapsed.Hours()/24)
 
 				case <-ticker4:
-					t := time.Now()
-					elapsed := t.Sub(launchB)
-					fmt.Printf("%s has been in space %.0f days\n", names[4], elapsed.Hours()/24)
+				t := time.Now()
+				elapsed := t.Sub(launchB)
+				fmt.Printf("%s has been in space %.0f days\n", names[4], elapsed.Hours()/24)
 
 				case <-ticker5:
-					t := time.Now()
-					elapsed := t.Sub(launchB)
-					fmt.Printf("%s has been in space %.0f days\n", names[5], elapsed.Hours()/24)
+				t := time.Now()
+				elapsed := t.Sub(launchB)
+				fmt.Printf("%s has been in space %.0f days\n", names[5], elapsed.Hours()/24)
 
 				}
-			}
-	}
+				}
+				}
+	 */
 	return names, days, hours
-}
-
-func makeTicker() <-chan time.Time{
-	time.Sleep(time.Millisecond*50)
-	ticker := time.Tick(time.Second*5)
-	return ticker
 }
 
 /*
@@ -454,8 +452,11 @@ PAGES
 
 //main page
 func Page(w http.ResponseWriter, r *http.Request) {
+	//renders the page
 	renderTemplate(w, formatJson())
+	//prints to console which API key is being used, #4 is the last one
 	fmt.Printf("Using API Key #%d\n", GeoKeysUsed+1)
+	//sleeps for updatefrequency
 	time.Sleep(time.Second * time.Duration(updateFrequency))
 	http.ServeFile(w, r, "empty.html")
 	Page(w, r)
@@ -470,34 +471,8 @@ func CssPage(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "css.css")
 }
 
-/**
-*UNUSED FUNCTIONS
- */
-
-//used to find error messages when api key usage has been exceeded
-func overloadCountryFinder(overloadKey string) {
-	for i := 0; i < 2500; i++ {
-		ting, _ := http.Get("https://maps.googleapis.com/maps/api/geocode/json?latlng=-18.489638,22.767979&key="+overloadKey)
-		read, _ := ioutil.ReadAll(ting.Body)
-		fmt.Println(string(read))
-		fmt.Println(i)
-	}
-}
-
-//prints json in console
-func printJson(iss issData) {
-	fmt.Printf("Unix timestamp: %d\n", iss.UnixTime)
-	fmt.Printf("'Normal' timestamp: %s\n", time.Unix(int64(iss.UnixTime), 0))
-	fmt.Printf("Latitude: %s\n", iss.Pos.Latitude)
-	fmt.Printf("Longitude: %s\n\n", iss.Pos.Longitude)
-	time.Sleep(time.Second *5)
-	lat := iss.Pos.Latitude
-	long := iss.Pos.Longitude
-	mapsUrl := "https://www.google.com/maps/search/" + lat + "+" + long
-	fmt.Println(mapsUrl)
-}
-
 //opens a url in default browser
+//use for test purposes
 func open(url string) error {
 	var cmd string
 	var args []string
@@ -513,4 +488,18 @@ func open(url string) error {
 	}
 	args = append(args, url)
 	return exec.Command(cmd, args...).Start()
+}
+
+/**
+*UNUSED FUNCTIONS
+ */
+
+//used to find error messages when api key usage has been exceeded
+func overloadCountryFinder(overloadKey string) {
+	for i := 0; i < 2500; i++ {
+		ting, _ := http.Get("https://maps.googleapis.com/maps/api/geocode/json?latlng=-18.489638,22.767979&key="+overloadKey)
+		read, _ := ioutil.ReadAll(ting.Body)
+		fmt.Println(string(read))
+		fmt.Println(i)
+	}
 }

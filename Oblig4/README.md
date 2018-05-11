@@ -15,11 +15,19 @@ longitude, elevation og timestamp. http://api.open-notify.org/iss-now.json
 Applikasjonen vi har utviklet er en Single-page applikasjon. Den har ingen user-input og self oppdaterer hvert 15. sekund.   
 //Mer konkret er applikasjonen en Thin Server Architecture.  
 I vår applikasjon bruker vi Go, HTML og CSS sammen til å gi oss resultatet vi ønsker.  
-Vi bruker Go hovedsakelig til å handle json API--->  
-For å finne elapsed time til de ulike astronautene bruker vi time.Date func i time packagen. Det som er nyttig med denne funksjonen er at man kan oppgi en start date fra når tickeren skal begynne fram til present time. Dette vil alltid gi oss en oppdatert tid ettersom vi har satt start tiden til deres respektive oppskytning.   
-HTML--->  
-CSS--->  
+Vi bruker Go hovedsakelig til å handle json API. Json blir hentet i `getJson` og unmarshallet i `formatJson`. `getJson` blir brukt på alle de ulike API-ene, og `formatJson` blir brukt en gang, og setter all data fra de ulike API-ene inn i structen `issData`. Denne structen blir deretter sendt inn i funksjonen `renderTemplate` som gjennom en `http.ResponseWriter` bruker structen på en template og produserer nettsiden som blir vist på 'http://localhost:8080/'.
 
+
+For å finne elapsed time til de ulike astronautene bruker vi time.Date func i time packagen. Det som er nyttig med denne funksjonen er at man kan oppgi en start date og finne tiden som har gått fra start date til nå. Funksjonen blir kjørt hver gang siden oppdateres, og siden start date aldri fordandres vil elapsed time alltid være oppdatert.
+
+*To be deleted? fra når tickeren skal begynne fram til present time. Dette vil alltid gi oss en oppdatert tid ettersom vi har satt start tiden til deres respektive oppskytning.*
+
+
+HTML blir brukt til å sette opp siden, og CSS blir brukt til å kontrolle forskjellige objekter som HTML produserer. CSS-en brukt bestemmer hvor på siden de ulike objektene skal være, og hvordan de skal se ut (størrelse, font, farger osv.).
+Siden er delvis responsiv (dvs. sideoppsettet tilpasser seg til skjermstørrelsen), men dette er ikke et stort fokus på oppgaven, og er dermed langt fra perfekt. Dette ble gjort i CSS ved å bruke `@media only screen and` med max-width og max-height.  
+
+
+Etter at siden har kjørt i 15 sekunder, laster go-serveren opp en html-fil med en linje javascript som fjerner alt innhold på skjermen, og deretter blir hele siden lastet inn på nytt. Dette blir gjort slik at dataen på siden blir hentet fra API-ene hvert 15.sekund og deretter oppdatert på siden. Uten javascriptet risikerer vi at den forrige siden ikke blir borte når den nye printes, og den nye blir bare printet ved slutten av den forrige.
 
 ## Enhetstester  
 
