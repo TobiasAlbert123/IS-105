@@ -3,7 +3,7 @@
 I denne oppgaven har vi hatt litt friere tøyler enn fra de tidligere oppgavene. Her skulle vi lage en web applikasjon som blir hostet på en lokal server og skal gi useren nyttig informasjon om f.eks vær som vi selv kunne velge. Etter endel research og forslag kom vi fram til at vi skulle bruke en ISS plassering API.
 
 ### Disclaimers:  
-- placeholder
+- Siden er delvis responsiv, og vil fungere i flere forskjellige størrelser. Likevel er ikke dette hovedfokuset på oppgaven, så vi kan ikke garantere at siden vil se bra ut på alle enheter. Se vedlagte bilder på tenkt design.
 
 ## Systembeskrivelse
 
@@ -39,3 +39,9 @@ Siden applikasjonen ikke inneholder noen user input, er det vanskelig å lage go
 Det er også en test som sjekker om `globalError` har innhold, fordi den starter tom og innhold blir bare lagt til når en error forekommer. Programmet feiler og printer ut `globalError`. Det er verdt å merke at alle feilmeldingene som kommer, kommer mange ganger (rundt 9-10 ganger) fordi programmet er kodet til å prøve om igjen rundt 10 ganger
 
 Alle steder hvor en error blir initalisert, har funksjonskall som `log.Fatal()` blitt kommentert vekk i iss.go. Med disse fungerte ikke testene, ettersom programmet ble avsluttet før testene fikk noe data.
+
+
+## Eksempelbilder:  
+
+I havet:  
+![ocean-image](https://github.com/TobiasAlbert123/IS-105/blob/master/Oblig4/images/ocean-example.png)
