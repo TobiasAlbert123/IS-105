@@ -235,6 +235,7 @@ func getCountry(lat, long string) string{
 		case "OVER_QUERY_LIMIT":
 			nextGeoKey()
 			getCountry(lat, long)
+			results.Country = "N/A - API Keys depleted"
 		case "ZERO_RESULTS":
 			results.Country = "N/A"
 		case "INVALID_REQUEST":
@@ -265,68 +266,69 @@ func getCountry(lat, long string) string{
 func getTimeZone(lat, long string, unixTime int) (string, string){
 	timestamp := strconv.Itoa(unixTime)
 	//testurl := "https://maps.googleapis.com/maps/api/timezone/json?location=41.634663,-111.189675&timestamp=1525377238&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
-	url := "https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
-	timezone := TimeZoneFinder{}
-	err := json.Unmarshal(getJson(url), &timezone)
+	url := "https://maps.googleapis.com/maps/api/results/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
+	results := TimeZoneFinder{}
+	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
 		//log.Fatal("Unmarshal error: ", err)
 	}
 
-	switch timezone.Status {
+	switch results.Status {
 	case "OVER_QUERY_LIMIT":
 		nextGeoKey()
 		getTimeZone(lat, long, unixTime)
+		results.TimeZoneName = "N/A - API Keys depleted"
+		results.TimeZoneID = "N/A - API Keys depleted"
 	case "ZERO_RESULTS":
-		timezone.TimeZoneName = "N/A"
-		timezone.TimeZoneID = "N/A"
+		results.TimeZoneName = "N/A"
+		results.TimeZoneID = "N/A"
 	case "INVALID_REQUEST":
-		timezone.TimeZoneName = "N/A"
-		timezone.TimeZoneID = "N/A"
+		results.TimeZoneName = "N/A"
+		results.TimeZoneID = "N/A"
 		globalError += "Invalid request for timezone\n"
-		//fmt.Println("invalid request for timezone")
 	case "REQUEST_DENIED":
-		timezone.TimeZoneName = "N/A"
-		timezone.TimeZoneID = "N/A"
+		results.TimeZoneName = "N/A"
+		results.TimeZoneID = "N/A"
 		globalError += "request denied for timezone\n"
-		fmt.Println(timezone.ErrorMessage)
+		fmt.Println(results.ErrorMessage)
 	case "OK":
 		break
 	default:
-		fmt.Println("Timezone status: ", timezone.Status, timezone.TimeZoneName)
+		fmt.Println("Timezone status: ", results.Status, results.TimeZoneName)
 	}
-	return timezone.TimeZoneName, timezone.TimeZoneID
+	return results.TimeZoneName, results.TimeZoneID
 }
 
 //returns elevation or ocean depth
 func getElevation(lat, long string) float64 {
-	url := "https://maps.googleapis.com/maps/api/elevation/json?locations="+lat+","+long+"&key="+currentGeoKey
+	url := "https://maps.googleapis.com/maps/api/results/json?locations="+lat+","+long+"&key="+currentGeoKey
 	//testurl := "https://maps.googleapis.com/maps/api/elevation/json?locations=-51.3502,64.5989&key=AIzaSyDgGyEYCnYDCWCtODdiM-DSnuUTcN2XKCo"
 
-	elevation := ElevationFinder{}
-	err := json.Unmarshal(getJson(url), &elevation)
+	results := ElevationFinder{}
+	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
 		log.Fatal("Unmarshal error: ", err)
 	}
 
-	//fmt.Println(elevation.Results[0].Elevation)
-	switch elevation.Status {
+	//fmt.Println(results.Results[0].Elevation)
+	switch results.Status {
 	case "OVER_QUERY_LIMIT":
 		nextGeoKey()
 		getElevation(lat, long)
+		results.Results[0].Elevation = 0
 	case "ZERO_RESULTS":
-		elevation.Results[0].Elevation = 0
+		results.Results[0].Elevation = 0
 	case "INVALID_REQUEST":
 		globalError += "Invalid request for elevation\n"
-		fmt.Println("invalid request for elevation")
 	case "REQUEST_DENIED":
 		globalError += "request denied for elevation\n"
-		fmt.Println(elevation.ErrorMessage)
+		fmt.Println(results.ErrorMessage)
 	case "OK":
 		break
 	default:
-		fmt.Println("Elevation status", elevation.Status)
+		fmt.Println("Elevation status", results.Status)
 	}
-	return elevation.Results[0].Elevation
+	return results.Results[0].Elevation
 }
 
 /*
