@@ -151,7 +151,7 @@ func getJson(url string) []byte {
 //unmarshals and formats json
 func formatJson() *issData {
 	iss := issData{}
-	url := "http://api.open-notify.org/iss-now.jso"
+	url := "http://api.open-notify.org/iss-now.json"
 	err := json.Unmarshal(getJson(url), &iss)
 	if err != nil {
 		globalError += "Error at json unmarshal\n"
