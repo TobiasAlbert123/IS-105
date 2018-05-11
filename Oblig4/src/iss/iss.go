@@ -14,7 +14,6 @@ import (
 	"strconv"
 )
 
-
 func main() {
 	invalidData = false
 	http.HandleFunc("/", Page)
@@ -23,7 +22,7 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
-func RunForTest() {
+func runForTest() {
 	go main()
 	time.Sleep(time.Second*10)
 	open("http://localhost:8080/")
@@ -119,16 +118,14 @@ var GeoKeysUsed = 0
 var currentGeoKey = SliceOfGeoKeys[GeoKeysUsed]
 
 //amount of seconds
-var updateFrequency = 10
+var updateFrequency = 15
 
 var invalidData bool
 
 //var outside recursive function to prevent it from resetting infinitely
 var attemptedUnmarshals = 0
 
-var varLat = ""
-
-var varLong = ""
+var globalError = ""
 
 /*
 JSON HANDLING
@@ -136,34 +133,15 @@ JSON HANDLING
 
 //gets json from url
 func getJson(url string) []byte {
-
-	//Don't know if this would be better than the actual code
-/*
-	client := http.Client{
-		Timeout: time.Second *10,
-	}
-
-	request, err := http.NewRequest(http.MethodGet, url, nil)
+	response, err := http.Get(url)
 	if err != nil {
-		fmt.Println(err)
-	}
-	response, err := client.Do(request)
-	if err != nil {
-		fmt.Println(err)
+		globalError += "Error at http.Get\n"
+		//log.Fatal("Error at http.Get")
 	}
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println(err)
-	}
-*/
-
-	a, err := http.Get(url)
-	if err != nil {
-		log.Fatal("Error at http.Get")
-	}
-	body, err := ioutil.ReadAll(a.Body)
-	if err != nil {
-		log.Fatal("Error at ioutil.Readall")
+		globalError += "Error at ioutil.ReadAll\n"
+		//log.Fatal("Error at ioutil.Readall")
 	}
 	return body
 }
@@ -174,12 +152,13 @@ func formatJson() *issData {
 	url := "http://api.open-notify.org/iss-now.json"
 	err := json.Unmarshal(getJson(url), &iss)
 	if err != nil {
-		log.Fatal(err)
+		globalError += "Error at json unmarshal\n"
+		//log.Fatal(err)
 	}
 	//printJson(iss)
 	if isEmpty(iss) {
 		invalidData = true
-}
+	}
 	//country information
 	iss.Country = getCountry(iss.Pos.Latitude, iss.Pos.Longitude)
 
@@ -229,7 +208,9 @@ func formatJson() *issData {
 			time.Sleep(time.Millisecond * 5)
 			formatJson()
 		}
-		log.Fatalf("%d attemps at collecting ISS API data were unsuccessful. Ensure url (%s) is correct", attemptedUnmarshals, url)
+		//log.Fatalf("%d attemps at collecting ISS API data were unsuccessful. Ensure url (%s) is correct", attemptedUnmarshals, url)
+	} else if iss.Message == "" {
+		return &iss
 	}
 	return &iss
 }
@@ -246,7 +227,7 @@ func getCountry(lat, long string) string{
 
 	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
 	}
 	switch results.Status {
 		case "OVER_QUERY_LIMIT":
@@ -255,9 +236,11 @@ func getCountry(lat, long string) string{
 		case "ZERO_RESULTS":
 			results.Country = "N/A"
 		case "INVALID_REQUEST":
-			fmt.Println("Invalid request for geocoding")
+			results.Country = "N/A"
+			globalError += "Invalid request for geocoding\n"
 		case "REQUEST_DENIED":
-			fmt.Println(results.ErrorMessage)
+			results.Country = "N/A"
+			globalError += "request denied for country: " + results.ErrorMessage +"\n"
 		case "OK":
 			//country := results.Results[0].AddressComponents[len(results.Results[0].AddressComponents)-1].LongName
 			country := ""
@@ -284,7 +267,7 @@ func getTimeZone(lat, long string, unixTime int) (string, string){
 	timezone := TimeZoneFinder{}
 	err := json.Unmarshal(getJson(url), &timezone)
 	if err != nil {
-		log.Fatal("Unmarshal error: ", err)
+		//log.Fatal("Unmarshal error: ", err)
 	}
 
 	switch timezone.Status {
@@ -295,8 +278,14 @@ func getTimeZone(lat, long string, unixTime int) (string, string){
 		timezone.TimeZoneName = "N/A"
 		timezone.TimeZoneID = "N/A"
 	case "INVALID_REQUEST":
-		fmt.Println("invalid request for timezone")
+		timezone.TimeZoneName = "N/A"
+		timezone.TimeZoneID = "N/A"
+		globalError += "Invalid request for timezone\n"
+		//fmt.Println("invalid request for timezone")
 	case "REQUEST_DENIED":
+		timezone.TimeZoneName = "N/A"
+		timezone.TimeZoneID = "N/A"
+		globalError += "request denied for timezone\n"
 		fmt.Println(timezone.ErrorMessage)
 	case "OK":
 		break
@@ -325,8 +314,10 @@ func getElevation(lat, long string) float64 {
 	case "ZERO_RESULTS":
 		elevation.Results[0].Elevation = 0
 	case "INVALID_REQUEST":
+		globalError += "Invalid request for elevation\n"
 		fmt.Println("invalid request for elevation")
 	case "REQUEST_DENIED":
+		globalError += "request denied for elevation\n"
 		fmt.Println(elevation.ErrorMessage)
 	case "OK":
 		break
@@ -346,7 +337,7 @@ func nextGeoKey() {
 	if GeoKeysUsed <= len(SliceOfGeoKeys) {
 		currentGeoKey = SliceOfGeoKeys[GeoKeysUsed]
 	} else {
-		log.Fatal("No more API keys for reverse geocoding available")
+		//log.Fatal("No more API keys for reverse geocoding available")
 	}
 }
 
@@ -363,14 +354,16 @@ func isEmpty(iss issData) bool {
 func renderTemplate(w http.ResponseWriter, page *issData) {
 	t, err := template.ParseFiles("iss.html")
 	if err != nil {
-		log.Fatal(err)
+
 	}
 	if !invalidData {
 		t.Execute(w, page)
+
 	} else {
 		fmt.Fprintln(w, "404: Some or all data were nil. Sorry!")
 	}
 }
+
 
 func timeSinceLaunch() ([]string, []int, []int){
 	names := []string{"Scott Tingle", "Anton Shkaplerov", "Norishige Kanai", "Andrew Feustel", "Richard R. Arnold", "Oleg Artemyev"}

@@ -5,7 +5,10 @@ import (
 )
 
 func TestRunAndOpen(t *testing.T) {
-	RunForTest()
+	runForTest()
+	if globalError != "" {
+		t.Errorf(globalError)
+	}
 	if outOfAPIKeys(GeoKeysUsed, len(SliceOfGeoKeys)) {
 		t.Fail()
 	}
