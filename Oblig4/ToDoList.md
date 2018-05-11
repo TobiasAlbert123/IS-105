@@ -1,6 +1,5 @@
 To do list:  
-  - Systemarkitektur  
-  - Systemspesifikasjon  
+  - Systemarkitektur
   - CSS styling  
     - Embedded kart til høyre
   - Flere backup API keys til reverse geocoding
@@ -18,3 +17,4 @@ Contributions:
 - (Tobias) Google Maps embed med nåverende posisjon
 - (Tobias) Google API for land, tidssone og høydeforskjell på posisjon
 - (Tobias) Html template
+- (Benjamin) Systemspesifikasjon
