@@ -53,8 +53,14 @@ body {
     text-align: left;
 }
 
+#info-box p {
+    margin: 1px 0;
+    padding: 0;
+}
+
 #na {
     font-size: 0.9em;
+    margin: 1px 0;
 }
 
 #map-box {
@@ -116,7 +122,7 @@ body {
 /*
 Semi-responsive design
  */
-@media only screen and (max-width: 1133px), only screen and (max-height: 730px) {
+@media only screen and (max-width: 1133px), only screen and (max-height: 650px) {
    #boxes {
        overflow: auto;
        height: 92vh;
