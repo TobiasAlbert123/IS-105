@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"encoding/json"
-	"log"
 	"html/template"
 	"math"
 	"runtime"
 	"os/exec"
 	"strconv"
+	"log"
 )
 
 func main() {
@@ -266,11 +266,11 @@ func getCountry(lat, long string) string{
 func getTimeZone(lat, long string, unixTime int) (string, string){
 	timestamp := strconv.Itoa(unixTime)
 	//testurl := "https://maps.googleapis.com/maps/api/timezone/json?location=41.634663,-111.189675&timestamp=1525377238&key=AIzaSyDh4iNsKY2S8cT-qrwjkDZENR2fgo4oDvY"
-	url := "https://maps.googleapis.com/maps/api/results/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
+	url := "https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+long+"&timestamp="+timestamp+"&key="+currentGeoKey
 	results := TimeZoneFinder{}
 	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
-		//log.Fatal("Unmarshal error: ", err)
+		log.Fatal("Unmarshal error at timezone: ", err)
 	}
 
 	switch results.Status {
@@ -301,13 +301,13 @@ func getTimeZone(lat, long string, unixTime int) (string, string){
 
 //returns elevation or ocean depth
 func getElevation(lat, long string) float64 {
-	url := "https://maps.googleapis.com/maps/api/results/json?locations="+lat+","+long+"&key="+currentGeoKey
+	url := "https://maps.googleapis.com/maps/api/elevation/json?locations="+lat+","+long+"&key="+currentGeoKey
 	//testurl := "https://maps.googleapis.com/maps/api/elevation/json?locations=-51.3502,64.5989&key=AIzaSyDgGyEYCnYDCWCtODdiM-DSnuUTcN2XKCo"
 
 	results := ElevationFinder{}
 	err := json.Unmarshal(getJson(url), &results)
 	if err != nil {
-		log.Fatal("Unmarshal error: ", err)
+		log.Fatal("Unmarshal error at elevation: ", err)
 	}
 
 	//fmt.Println(results.Results[0].Elevation)
@@ -393,7 +393,7 @@ func astronautInfo() ([]string, []int, []int){
 	//slices to be returned
 	days := []int{daysA, daysB}
 	hours := []int{hoursA, hoursB}
-	
+
 	return names, days, hours
 }
 
