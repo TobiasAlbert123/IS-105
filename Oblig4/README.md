@@ -18,9 +18,7 @@ I vår applikasjon bruker vi Go, HTML og CSS sammen til å gi oss resultatet vi 
 Vi bruker Go hovedsakelig til å handle json API. Json blir hentet i `getJson` og unmarshallet i `formatJson`. `getJson` blir brukt på alle de ulike API-ene, og `formatJson` blir brukt en gang, og setter all data fra de ulike API-ene inn i structen `issData`. Denne structen blir deretter sendt inn i funksjonen `renderTemplate` som gjennom en `http.ResponseWriter` bruker structen på en template og produserer nettsiden som blir vist på 'http://localhost:8080/'.
 
 
-For å finne elapsed time til de ulike astronautene bruker vi time.Date func i time packagen. Det som er nyttig med denne funksjonen er at man kan oppgi en start date og finne tiden som har gått fra start date til nå. Funksjonen blir kjørt hver gang siden oppdateres, og siden start date aldri fordandres vil elapsed time alltid være oppdatert.
-
-*To be deleted? fra når tickeren skal begynne fram til present time. Dette vil alltid gi oss en oppdatert tid ettersom vi har satt start tiden til deres respektive oppskytning.*
+For å finne elapsed time til de ulike astronautene bruker vi time.Date func i time packagen. Det som er nyttig med denne funksjonen er at man kan oppgi en start date og finne tiden som har gått fra start date til nå. Funksjonen blir kjørt hver gang siden oppdateres, og siden start date aldri fordandres vil elapsed time alltid være oppdatert.  
 
 
 HTML blir brukt til å sette opp siden, og CSS blir brukt til å kontrolle forskjellige objekter som HTML produserer. CSS-en brukt bestemmer hvor på siden de ulike objektene skal være, og hvordan de skal se ut (størrelse, font, farger osv.).
